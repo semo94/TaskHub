@@ -12,8 +12,13 @@
     tools:context="com.example.saleem.testgithub.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <TextView
+    <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fuck the world" />
+        android:text="New RadioButton"
+        android:id="@+id/radioButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:checked="true" />
 </RelativeLayout>
