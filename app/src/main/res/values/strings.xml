@@ -8,5 +8,11 @@
     <string name="search_hint">Search for task owner #8230</string>
     <string name="notification_panel">Notifications</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="No_ToDo">There is no tasks to do :)</string>
+    <string name="No_Needs">Your needs list is empty, press + button to start assigning tasks</string>
+    <string name="No_Contacts">No users are using this app in your contact list :(</string>
+
+
 
 </resources>

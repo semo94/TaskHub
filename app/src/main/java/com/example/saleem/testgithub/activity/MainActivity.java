@@ -1,18 +1,26 @@
-package com.example.saleem.testgithub;
+package com.example.saleem.testgithub.activity;
 
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.saleem.testgithub.Notification.Utils;
+import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.ViewPagerAdapter;
+import com.example.saleem.testgithub.fragments.Contacts;
+import com.example.saleem.testgithub.fragments.MyNeeds;
+import com.example.saleem.testgithub.fragments.ToDoS;
 
 public class MainActivity extends AppCompatActivity {
 
     private int mNotificationsCount = 0;
+
 
 
 
@@ -23,11 +31,27 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Tabs
+        // getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
         // Run a task to fetch the notifications count
         new FetchCountTask().execute();
 
-
     }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new MyNeeds(), "My Needs");
+        adapter.addFragment(new ToDoS(), "To Do's");
+        adapter.addFragment(new Contacts(), "Contacts");
+        viewPager.setAdapter(adapter);
+    }
+
+
 
     @Override
 
