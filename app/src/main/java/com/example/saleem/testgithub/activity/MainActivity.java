@@ -1,5 +1,8 @@
 package com.example.saleem.testgithub.activity;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 
 import com.example.saleem.testgithub.Notification.Utils;
 import com.example.saleem.testgithub.R;
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MyNeeds(), "My Needs");
@@ -59,31 +64,12 @@ public class MainActivity extends AppCompatActivity {
         public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-    /*    MenuItem searchItem = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView)
-                MenuItemCompat.getActionView(searchItem);
-
-        searchView.setOnQueryTextListener(
-                new SearchView.OnQueryTextListener() {
-
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        return false;
-                    }
-                }
-        );
 
         // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-    */
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        ComponentName cn = new ComponentName(this, SearchResultsActivity.class);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(cn));
 
         // Get the notifications MenuItem and
         // its LayerDrawable (layer-list)
@@ -136,7 +122,7 @@ Updates the count of notifications in the ActionBar.
         protected Integer doInBackground(Void... params) {
             // example count. This is where you'd
             // query your data store for the actual count.
-            return 5;
+            return 1;
         }
 
         @Override

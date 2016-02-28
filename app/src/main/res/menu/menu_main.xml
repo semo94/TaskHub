@@ -20,17 +20,17 @@
         android:title="@string/action_about"
         app:showAsAction="never" />
 
-    <item android:id="@+id/search"
+    <item android:id="@+id/menu_search"
         android:title="@string/search_title"
         android:icon="@drawable/ic_search"
         app:showAsAction="collapseActionView|ifRoom"
-        android:actionViewClass="android.widget.SearchView" />
+        app:actionViewClass="android.widget.SearchView"/>
 
     <item
         android:id="@+id/notifications"
         android:title="@string/notification_panel"
         android:icon="@drawable/ic_menu_notifications"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 
 
