@@ -1,4 +1,4 @@
-package com.example.saleem.testgithub;
+package com.example.saleem.testgithub.fragments;
 
 
 import android.support.v4.app.Fragment;

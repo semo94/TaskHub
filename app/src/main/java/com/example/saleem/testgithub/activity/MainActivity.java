@@ -7,6 +7,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +17,7 @@ import android.widget.SearchView;
 
 import com.example.saleem.testgithub.Notification.Utils;
 import com.example.saleem.testgithub.R;
-import com.example.saleem.testgithub.ViewPagerAdapter;
+import com.example.saleem.testgithub.fragments.ViewPagerAdapter;
 import com.example.saleem.testgithub.fragments.Contacts;
 import com.example.saleem.testgithub.fragments.MyNeeds;
 import com.example.saleem.testgithub.fragments.ToDoS;
@@ -36,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         // Tabs
-        // getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        ComponentName cn = new ComponentName(this, SearchResultsActivity.class);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(cn));
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
 
         // Get the notifications MenuItem and
