@@ -9,6 +9,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_deActivate"
+        android:orderInCategory="400"
+        android:title="@string/action_deactivate"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_refresh"
         android:orderInCategory="200"
         android:title="@string/action_refresh"

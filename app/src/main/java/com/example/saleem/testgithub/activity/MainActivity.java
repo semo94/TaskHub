@@ -1,8 +1,8 @@
 package com.example.saleem.testgithub.activity;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,10 +21,13 @@ import com.example.saleem.testgithub.fragments.ViewPagerAdapter;
 import com.example.saleem.testgithub.fragments.Contacts;
 import com.example.saleem.testgithub.fragments.MyNeeds;
 import com.example.saleem.testgithub.fragments.ToDoS;
+import com.example.saleem.testgithub.helper.PrefManager;
+
 
 public class MainActivity extends AppCompatActivity {
 
     private int mNotificationsCount = 0;
+    private PrefManager pref;
 
 
 
@@ -42,6 +45,15 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+
+        // Checking if user session
+        // if not logged in, take user to sms screen
+        pref = new PrefManager(getApplicationContext());
+        if (!pref.isLoggedIn()) {
+            logout();
+        }
+
+
         // Run a task to fetch the notifications count
         new FetchCountTask().execute();
 
@@ -57,6 +69,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Logging out user
+     * will clear all user shared preferences and navigate to
+     * sms activation screen
+     */
+    private void logout() {
+        pref.clearSession();
+
+        Intent intent = new Intent(MainActivity.this, RegActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        startActivity(intent);
+
+        finish();
+    }
 
     @Override
 
@@ -97,6 +124,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.notifications) {
             // TODO: display unread notifications.
+            return true;
+        }
+
+        if (id == R.id.action_deActivate) {
+            logout();
             return true;
         }
 

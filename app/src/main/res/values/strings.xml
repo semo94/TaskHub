@@ -7,11 +7,28 @@
     <string name="search_title">Search</string>
     <string name="search_hint">Search by name&#8230;</string>
     <string name="notification_panel">Notifications</string>
+    <string name="reg_label">Verify your phone number</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="No_ToDo">There is no tasks to do :)</string>
     <string name="No_Needs">Your needs list is empty, press + button to start assigning tasks</string>
     <string name="No_Contacts">No users are using this app in your contact list :(</string>
+
+    <string name="action_logout">Logout</string>
+    <string name="msg_enter_mobile">TaskHub will send an SMS message to verify your phone number. Enter your country code and phone number to get started:</string>
+    <string name="lbl_name">Name</string>
+    <string name="lbl_email">Email</string>
+    <string name="lbl_mobile">Mobile</string>
+    <string name="lbl_next">SUBMIT</string>
+    <string name="msg_sit_back">Sit back &amp; Relax! while we verify your mobile number</string>
+    <string name="msg_manual_otp">(Enter the verification code below in case if we fail to detect the SMS automatically)</string>
+    <string name="lbl_enter_otp"><font size= "14">Enter code here</font></string>
+    <string name="lbl_submit">ACTIVATE</string>
+    <string name="edit_number_des">Edit your phone number</string>
+    <string name="country_plus">+</string>
+    <string name="inputMobile_hint"><font size= "14">your phone number</font></string>
+    <string name="action_deactivate">Deactivate account</string>
 
 
 </resources>
