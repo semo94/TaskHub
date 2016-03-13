@@ -30,5 +30,7 @@
     <string name="inputMobile_hint"><font size= "14">your phone number</font></string>
     <string name="action_deactivate">Deactivate account</string>
 
+    <string name="search">Search</string>
+
 
 </resources>

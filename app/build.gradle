@@ -26,4 +26,5 @@ dependencies {
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.android.support:design:23.2.0'
     compile 'com.android.support:support-v4:23.2.0'
+    compile files('libs/libphonenumber-7.0.9.jar')
 }

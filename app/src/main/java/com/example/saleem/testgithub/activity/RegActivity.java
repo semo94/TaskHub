@@ -1,17 +1,24 @@
 package com.example.saleem.testgithub.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,44 +29,66 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.app.VolleySkeleton;
+import com.example.saleem.testgithub.helper.Country;
+import com.example.saleem.testgithub.helper.CountryPicker;
 import com.example.saleem.testgithub.helper.PrefManager;
 import com.example.saleem.testgithub.service.HttpService;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-public class RegActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
 
     private static String TAG = RegActivity.class.getSimpleName();
     private ViewPager viewPager;
-    private EditText inputMobile, inputOtp;
+
+    private EditText inputMobile, inputOtp,countryCodeInput;
     private ProgressBar progressBar;
     private PrefManager pref;
     private TextView txtEditMobile;
     private LinearLayout layoutEditMobile;
+    private Spinner countrySpinner;
+
+    private static final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+
+
+    private Map<String,String> codeNameMap = new HashMap<>();
+
+    private Country currentCountry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reg);
 
-        viewPager = (ViewPager) findViewById(R.id.viewPagerVertical);
-        inputMobile = (EditText) findViewById(R.id.inputMobile);
-        inputOtp = (EditText) findViewById(R.id.inputOtp);
-        Button btnRequestSms = (Button) findViewById(R.id.btn_request_sms);
-        Button btnVerifyOtp = (Button) findViewById(R.id.btn_verify_otp);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        ImageButton btnEditMobile = (ImageButton) findViewById(R.id.btn_edit_mobile);
-        txtEditMobile = (TextView) findViewById(R.id.txt_edit_mobile);
-        layoutEditMobile = (LinearLayout) findViewById(R.id.layout_edit_mobile);
+        viewPager                   = (ViewPager) findViewById(R.id.viewPagerVertical);
+        inputMobile                 = (EditText) findViewById(R.id.inputMobile);
+        inputOtp                    = (EditText) findViewById(R.id.inputOtp);
+        countryCodeInput            = (EditText) findViewById(R.id.countryCode);
+        Button btnRequestSms        = (Button) findViewById(R.id.btn_request_sms);
+        Button btnVerifyOtp         = (Button) findViewById(R.id.btn_verify_otp);
+        progressBar                 = (ProgressBar) findViewById(R.id.progressBar);
+        ImageButton btnEditMobile   = (ImageButton) findViewById(R.id.btn_edit_mobile);
+        txtEditMobile               = (TextView) findViewById(R.id.txt_edit_mobile);
+        layoutEditMobile            = (LinearLayout) findViewById(R.id.layout_edit_mobile);
+        countrySpinner              = (Spinner) findViewById(R.id.countrySpinner);
 
         // view click listeners
         btnEditMobile.setOnClickListener(this);
         btnRequestSms.setOnClickListener(this);
         btnVerifyOtp.setOnClickListener(this);
+        countrySpinner.setOnTouchListener(this);
+
+
 
         // hiding the edit mobile number
         layoutEditMobile.setVisibility(View.GONE);
@@ -77,6 +106,8 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
 
         ViewPagerAdapter adapter = new ViewPagerAdapter();
         viewPager.setAdapter(adapter);
+
+
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -99,6 +130,35 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         if (pref.isWaitingForSms()) {
             viewPager.setCurrentItem(1);
             layoutEditMobile.setVisibility(View.VISIBLE);
+        }
+
+        //get user country name and add it to country
+        setUserCountry();
+
+
+
+        //make mobile editText take the focus (cursor)
+        inputMobile.setFocusableInTouchMode(true);
+        inputMobile.requestFocus();
+
+
+        prepareMap();
+
+        countryCodeInput.addTextChangedListener(countryCodeTextWatcher);
+    }
+
+    private void prepareMap() {
+        try {
+            ArrayList<Country> countries = Country.countriesList(getApplicationContext());
+
+            for (Country country:countries){
+                codeNameMap.put(country.getCode(),country.getName());
+            }
+
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -133,14 +193,16 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         // it should be of 10 digits length
         if (isValidPhoneNumber(mobile)) {
 
+            String E164PhoneNumber = "+"+currentCountry.getCode()+mobile;
+
             // request for sms
             progressBar.setVisibility(View.VISIBLE);
 
             // saving the mobile number in shared preferences
-            pref.setMobileNumber(mobile);
+            pref.setMobileNumber(E164PhoneNumber);
 
             // requesting for sms
-            requestForSMS(mobile);
+            requestForSMS(E164PhoneNumber);
 
         } else {
             Toast.makeText(getApplicationContext(), "Please enter valid mobile number", Toast.LENGTH_SHORT).show();
@@ -249,9 +311,27 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
      * mobile number should be of 10 digits length
      *
      */
-    private static boolean isValidPhoneNumber(String mobile) {
-        String regEx = "^[0-9]{10}$";
-        return mobile.matches(regEx);
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        try
+        {
+            Phonenumber.PhoneNumber number = phoneUtil.parse(phoneNumber, currentCountry.getIso());
+            return phoneUtil.isValidNumberForRegion(number, currentCountry.getIso().toUpperCase());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            Log.d(TAG,"OnTouchSpinner");
+            startActivityForResult(new Intent(this, CountryPicker.class),CountryPicker.PICK_COUNTRY_REQ);
+        }
+        return false;
     }
 
 
@@ -281,5 +361,65 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
             return findViewById(resId);
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CountryPicker.PICK_COUNTRY_REQ){
+            if (resultCode == RESULT_OK){
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    currentCountry = bundle.getParcelable(CountryPicker.SELECTED_COUNTRY);
+                    displayCountryInfo(currentCountry);
+                    inputMobile.requestFocus();
+                }
+            }
+        }
+    }
+
+
+
+    private void displayCountryInfo(Country selectedCountry) {
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, R.layout.country_spinner_item, new String[]{selectedCountry.getName()}); //selected item will look like a spinner set from XML
+        countrySpinner.setAdapter(spinnerArrayAdapter);
+        countryCodeInput.setText(selectedCountry.getCode());
+    }
+
+
+    private void setUserCountry() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        String countryISO =  telephonyManager.getSimCountryIso().toUpperCase();
+        Locale local = new Locale("",countryISO);
+        String countryNameString = local.getDisplayCountry();
+        String countryCode = String.valueOf(phoneUtil.getCountryCodeForRegion(countryISO.toUpperCase()));
+        currentCountry = new Country(countryISO,countryNameString,countryCode);
+        displayCountryInfo(currentCountry);
+    }
+
+    private TextWatcher countryCodeTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String code = s.toString();
+
+            String countryName = codeNameMap.get(code);
+            if (countryName != null){
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.country_spinner_item, new String[]{countryName}); //selected item will look like a spinner set from XML
+                countrySpinner.setAdapter(spinnerArrayAdapter);
+            }else{
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.country_spinner_item, new String[]{"Invalid Code"}); //selected item will look like a spinner set from XML
+                countrySpinner.setAdapter(spinnerArrayAdapter);
+            }
+        }
+    };
 
 }
