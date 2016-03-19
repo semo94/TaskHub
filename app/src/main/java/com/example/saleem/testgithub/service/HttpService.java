@@ -9,7 +9,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.example.saleem.testgithub.activity.MainActivity;
+import com.example.saleem.testgithub.activity.UserInfoActivity;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.app.VolleySkeleton;
 import com.example.saleem.testgithub.helper.PrefManager;
@@ -67,7 +67,7 @@ public class HttpService extends IntentService {
                         PrefManager pref = new PrefManager(getApplicationContext());
                         pref.createLogin(mobile);
 
-                        Intent intent = new Intent(HttpService.this, MainActivity.class);
+                        Intent intent = new Intent(HttpService.this, UserInfoActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
 

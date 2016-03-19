@@ -26,4 +26,6 @@ public class Utils {
         icon.mutate();
         icon.setDrawableByLayerId(R.id.ic_badge, badge);
     }
+
+
 }

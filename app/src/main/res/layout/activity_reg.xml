@@ -15,7 +15,6 @@
             android:id="@+id/layout_sms"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
             android:orientation="vertical"
             android:paddingTop="32dp"
             android:gravity="left">
@@ -28,7 +27,6 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:text="@string/msg_enter_mobile"
-                android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
             <LinearLayout
@@ -50,7 +48,7 @@
                     android:backgroundTint="@color/colorAccent"
                     android:layout_marginLeft="10dp"
                     android:ems="13"
-                    android:layout_marginRight="42dp" />
+                    android:layout_marginRight="22dp" />
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -62,29 +60,25 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="@string/country_plus"
-                        android:id="@+id/plus"
-                        android:textColor="#ffffff" />
+                        android:id="@+id/plus" />
 
                     <EditText
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:inputType="phone"
                         android:maxLength="3"
-                        android:ems="3"
+                        android:ems="4"
                         android:id="@+id/countryCode"
-                        android:textColor="#ffffff"
                         android:backgroundTint="@color/colorAccent" />
 
                     <EditText
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:inputType="phone"
-                        android:maxLength="10"
+                        android:maxLength="15"
                         android:ems="10"
                         android:id="@+id/inputMobile"
                         android:hint="@string/inputMobile_hint"
-                        android:textColorHint="#ffffff"
-                        android:textColor="#ffffff"
                         android:backgroundTint="@color/colorAccent" />
                 </LinearLayout>
 
@@ -96,9 +90,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="25dp"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@color/colorPrimary"
                     android:text="@string/lbl_next"
-                    android:textColor="@android:color/white"
+                    android:textColor="#FFFFFF"
                     android:textSize="14sp" />
 
 

@@ -22,9 +22,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile 'com.android.support:appcompat-v7:24.0.0-alpha1'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
-    compile 'com.android.support:design:23.2.0'
-    compile 'com.android.support:support-v4:23.2.0'
-    compile files('libs/libphonenumber-7.0.9.jar')
+    compile 'com.pkmmte.view:circularimageview:1.1'
+    compile 'com.theartofdev.edmodo:android-image-cropper:1.2.2'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.android.support:design:24.0.0-alpha1'
+    compile 'com.android.support:support-v4:24.0.0-alpha1'
 }

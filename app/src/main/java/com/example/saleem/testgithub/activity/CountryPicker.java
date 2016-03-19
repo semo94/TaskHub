@@ -1,4 +1,4 @@
-package com.example.saleem.testgithub.helper;
+package com.example.saleem.testgithub.activity;
 
 /**
  * Created by Mo7ammed on 13/03/2016.
@@ -18,6 +18,8 @@ import android.widget.ListView;
 
 
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.helper.Country;
+import com.example.saleem.testgithub.helper.CountryListAdapter;
 
 import java.util.ArrayList;
 import java.util.Comparator;

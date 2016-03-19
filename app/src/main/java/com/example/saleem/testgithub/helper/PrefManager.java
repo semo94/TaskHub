@@ -4,7 +4,6 @@ package com.example.saleem.testgithub.helper;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import java.util.HashMap;
 
 public class PrefManager {
 
@@ -33,6 +32,7 @@ public class PrefManager {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
         editor = pref.edit();
+        //editor.commit();
     }
 
     public void setIsWaitingForSms(boolean isWaiting) {

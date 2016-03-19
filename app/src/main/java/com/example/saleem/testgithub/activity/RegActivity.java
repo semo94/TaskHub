@@ -2,10 +2,10 @@ package com.example.saleem.testgithub.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,7 +30,6 @@ import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.app.VolleySkeleton;
 import com.example.saleem.testgithub.helper.Country;
-import com.example.saleem.testgithub.helper.CountryPicker;
 import com.example.saleem.testgithub.helper.PrefManager;
 import com.example.saleem.testgithub.service.HttpService;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -58,12 +57,9 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
     private LinearLayout layoutEditMobile;
     private Spinner countrySpinner;
 
-    private static final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
-
-
-    private Map<String,String> codeNameMap = new HashMap<>();
-
+    private Map<String,Country> codeCountryMap = new HashMap<>();
     private Country currentCountry;
+    private static final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +83,6 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         btnRequestSms.setOnClickListener(this);
         btnVerifyOtp.setOnClickListener(this);
         countrySpinner.setOnTouchListener(this);
-
-
 
         // hiding the edit mobile number
         layoutEditMobile.setVisibility(View.GONE);
@@ -151,13 +145,12 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         try {
             ArrayList<Country> countries = Country.countriesList(getApplicationContext());
 
+
             for (Country country:countries){
-                codeNameMap.put(country.getCode(),country.getName());
+                codeCountryMap.put(country.getCode(),country);
             }
 
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -187,13 +180,11 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
      * Validating user details form
      */
     private void validateForm() {
-        String mobile = inputMobile.getText().toString().trim();
-
+        Phonenumber.PhoneNumber number = isValidPhoneNumber();
         // validating mobile number
-        // it should be of 10 digits length
-        if (isValidPhoneNumber(mobile)) {
+        if (number != null) {
 
-            String E164PhoneNumber = "+"+currentCountry.getCode()+mobile;
+            String E164PhoneNumber =   phoneUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
 
             // request for sms
             progressBar.setVisibility(View.VISIBLE);
@@ -203,7 +194,6 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
 
             // requesting for sms
             requestForSMS(E164PhoneNumber);
-
         } else {
             Toast.makeText(getApplicationContext(), "Please enter valid mobile number", Toast.LENGTH_SHORT).show();
         }
@@ -223,7 +213,8 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                 Log.d(TAG, response);
 
                 try {
-                    JSONObject responseObj = new JSONObject(response);
+//                    JSONObject responseObj = new JSONArray(response).getJSONObject(0);
+                   JSONObject responseObj = new JSONObject(response);
 
                     // Parsing json object response
                     // response will be a json object
@@ -247,6 +238,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(getApplicationContext(),
                                 "Error: " + message,
                                 Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "error=true");
                     }
 
                     // hiding the progress bar
@@ -256,8 +248,9 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                     Toast.makeText(getApplicationContext(),
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "catch e");
 
-                    progressBar.setVisibility(View.GONE);
+                             progressBar.setVisibility(View.GONE);
                 }
 
             }
@@ -311,15 +304,22 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
      * mobile number should be of 10 digits length
      *
      */
-    private boolean isValidPhoneNumber(String phoneNumber) {
+    private Phonenumber.PhoneNumber isValidPhoneNumber() {
         try
         {
-            Phonenumber.PhoneNumber number = phoneUtil.parse(phoneNumber, currentCountry.getIso());
-            return phoneUtil.isValidNumberForRegion(number, currentCountry.getIso().toUpperCase());
+            String mobile   = inputMobile.getText().toString().trim();
+            String code     = countryCodeInput.getText().toString().trim();
+            Phonenumber.PhoneNumber number = phoneUtil.parse(mobile, ((Country)codeCountryMap.get(code)).getIso().toUpperCase());
+            phoneUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
+            if (phoneUtil.isValidNumberForRegion(number, currentCountry.getIso().toUpperCase())){
+                return number;
+            }else {
+                return null;
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
@@ -410,9 +410,9 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         @Override
         public void afterTextChanged(Editable s) {
             String code = s.toString();
-
-            String countryName = codeNameMap.get(code);
-            if (countryName != null){
+            Country country = codeCountryMap.get(code);
+            if (country != null){
+                String countryName = country.getName();
                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.country_spinner_item, new String[]{countryName}); //selected item will look like a spinner set from XML
                 countrySpinner.setAdapter(spinnerArrayAdapter);
             }else{

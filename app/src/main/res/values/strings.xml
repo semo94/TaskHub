@@ -23,14 +23,22 @@
     <string name="lbl_next">SUBMIT</string>
     <string name="msg_sit_back">Sit back &amp; Relax! while we verify your mobile number</string>
     <string name="msg_manual_otp">(Enter the verification code below in case if we fail to detect the SMS automatically)</string>
-    <string name="lbl_enter_otp"><font size= "14">Enter code here</font></string>
+    <string name="lbl_enter_otp"><font size="14">Enter code here</font></string>
     <string name="lbl_submit">ACTIVATE</string>
     <string name="edit_number_des">Edit your phone number</string>
     <string name="country_plus">+</string>
-    <string name="inputMobile_hint"><font size= "14">your phone number</font></string>
+    <string name="inputMobile_hint"><font size="14">your phone number</font></string>
     <string name="action_deactivate">Deactivate account</string>
 
     <string name="search">Search</string>
 
+
+    <string name="hint_name">Full Name</string>
+    <string name="hint_email">Email</string>
+    <string name="btn_startApp">Enjoy your TaskHub :)</string>
+    <string name="err_msg_name">Please enter your full name</string>
+    <string name="err_msg_email">Please enter a valid email address</string>
+    <string name="guideLine_text">You are one step away from getting tranquility, please provide your name, email and profile photo below:</string>
+    <string name="done">Done</string>
 
 </resources>
