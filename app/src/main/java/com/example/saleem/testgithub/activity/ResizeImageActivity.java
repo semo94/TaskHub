@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.saleem.testgithub.R;
-import com.example.saleem.testgithub.helper.PhotoManager;
+import com.example.saleem.testgithub.utils.PhotoManager;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class ResizeImageActivity extends AppCompatActivity {

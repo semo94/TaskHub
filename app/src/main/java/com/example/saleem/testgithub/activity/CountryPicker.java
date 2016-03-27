@@ -19,7 +19,7 @@ import android.widget.ListView;
 
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.helper.Country;
-import com.example.saleem.testgithub.helper.CountryListAdapter;
+import com.example.saleem.testgithub.listAdapters.CountryListAdapter;
 
 import java.util.ArrayList;
 import java.util.Comparator;

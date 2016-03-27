@@ -9,10 +9,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/No_Needs"
-        android:textSize="32sp"
+        android:textSize="18sp"
         android:textStyle="bold|italic"
-        android:layout_gravity="center"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp" />
 
 </FrameLayout>

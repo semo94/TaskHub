@@ -27,7 +27,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.helper.CircularImageView;
-import com.example.saleem.testgithub.helper.PhotoManager;
+import com.example.saleem.testgithub.utils.PhotoManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

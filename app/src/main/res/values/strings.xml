@@ -11,8 +11,8 @@
 
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="No_ToDo">There is no tasks to do :)</string>
-    <string name="No_Needs">Your needs list is empty, press + button to start assigning tasks</string>
+    <string name="No_ToDo">There is no tasks to do. enjoy your day :)</string>
+    <string name="No_Needs">Your needs list is empty, press + button in "Contacts" to start assigning tasks</string>
     <string name="No_Contacts">No users are using this app in your contact list :(</string>
 
     <string name="action_logout">Logout</string>

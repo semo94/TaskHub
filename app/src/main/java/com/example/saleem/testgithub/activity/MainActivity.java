@@ -17,11 +17,11 @@ import android.widget.SearchView;
 
 import com.example.saleem.testgithub.Notification.Utils;
 import com.example.saleem.testgithub.R;
-import com.example.saleem.testgithub.fragments.ViewPagerAdapter;
 import com.example.saleem.testgithub.fragments.Contacts;
 import com.example.saleem.testgithub.fragments.MyNeeds;
 import com.example.saleem.testgithub.fragments.ToDoS;
-import com.example.saleem.testgithub.helper.PrefManager;
+import com.example.saleem.testgithub.fragments.ViewPagerAdapter;
+import com.example.saleem.testgithub.utils.PrefManager;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+
+
         // Tabs
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -48,11 +51,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Checking if user session
         // if not logged in, take user to sms screen
-        pref = new PrefManager(getApplicationContext());
+   /*     pref = new PrefManager(getApplicationContext());
         if (!pref.isLoggedIn()) {
             logout();
         }
-
+    */
 
         // Run a task to fetch the notifications count
         new FetchCountTask().execute();
@@ -67,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new Contacts(), "Contacts");
         viewPager.setAdapter(adapter);
     }
+
+
 
 
     /**
