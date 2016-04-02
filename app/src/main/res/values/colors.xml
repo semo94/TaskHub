@@ -5,14 +5,27 @@
     <color name="colorAccent">#26C6DA</color>
     <color name="colorDarkAccent">#00ACC1</color>
     <color name="colorLightAccent">#80DEEA</color>
-    <color name="windowBackground">#FAFAFA</color>
+    <!-- <color name="windowBackground">#FAFAFA</color> -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="divider">#E0E0E0</color>
 
     <color name="list_divider">#d9d9d9</color>
-    <color name="list_row_start_color">#ffffff</color>
-    <color name="list_row_end_color">#ffffff</color>
+
+    <color name="list_row_start_color">#FFFFFF</color>
+    <color name="list_row_end_color">#FFFFFF</color>
+
     <color name="list_row_hover_start_color">#ebeef0</color>
     <color name="list_row_hover_end_color">#ebeef0</color>
+
+    <color name="status_red_color">#F44336</color>
+    <color name="status_green_color">#4CAF50</color>
+
+
+    <color name="NewList_row_start_color">#FFEBEE</color>
+    <color name="NewList_row_end_color">#FFEBEE</color>
+
+    <color name="NewList_row_hover_start_color">#FFCDD2</color>
+    <color name="NewList_row_hover_end_color">#FFCDD2</color>
+
 </resources>

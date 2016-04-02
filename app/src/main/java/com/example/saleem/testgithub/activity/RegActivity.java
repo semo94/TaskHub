@@ -2,6 +2,7 @@ package com.example.saleem.testgithub.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -83,6 +84,9 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         btnRequestSms.setOnClickListener(this);
         btnVerifyOtp.setOnClickListener(this);
         countrySpinner.setOnTouchListener(this);
+        btnRequestSms.setTextColor(Color.WHITE);
+        btnVerifyOtp.setTextColor(Color.WHITE);
+
 
         // hiding the edit mobile number
         layoutEditMobile.setVisibility(View.GONE);

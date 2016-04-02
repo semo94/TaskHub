@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private PrefManager pref;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Checking if user session
         // if not logged in, take user to sms screen
-   /*     pref = new PrefManager(getApplicationContext());
+    /*    pref = new PrefManager(getApplicationContext());
         if (!pref.isLoggedIn()) {
             logout();
         }
@@ -89,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         finish();
     }
+
 
     @Override
 

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.app.VolleySkeleton;
+import com.example.saleem.testgithub.listAdapters.NewToDoListAdapter;
 import com.example.saleem.testgithub.listAdapters.ToDoListAdapter;
 import com.example.saleem.testgithub.model.Tasks;
 
@@ -33,12 +33,14 @@ public class ToDoS extends Fragment{
     private static final String TAG = ToDoS.class.getSimpleName();
 
     // Tasks json url
-    private static final String url = "http://taskhub.net23.net/tasks.json";
+    private static final String url = "http://www.taskhub.tk/semo94/TaskHub/JSON/todos.json";
     private ProgressDialog pDialog;
-    private List<Tasks> tasksList = new ArrayList<Tasks>();
-    private ListView listView;
+    private List<Tasks> toDosList = new ArrayList<>();
+    private List<Tasks> newToDoList = new ArrayList<>();
+    private ListView underProgressListView, pendingListView;
     private TextView noTasks;
-    private ToDoListAdapter adapter;
+    private NewToDoListAdapter newAdapter;
+    static public ToDoListAdapter adapter;
 
 
     public ToDoS() {
@@ -54,18 +56,27 @@ public class ToDoS extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        FrameLayout ToDoLayout = (FrameLayout) inflater.inflate(R.layout.fragment_to_do, container, false);
+        View ToDoLayout = inflater.inflate(R.layout.fragment_to_do, container, false);
 
         noTasks = (TextView) ToDoLayout.findViewById(R.id.no_task);
-        listView = (ListView) ToDoLayout.findViewById(R.id.list);
+        underProgressListView = (ListView) ToDoLayout.findViewById(R.id.toDo_list);
+        pendingListView = (ListView) ToDoLayout.findViewById(R.id.newToDo_list);
+
+
+            fetchUnderProgressToDos();
 
 
 
-        pDialog = new ProgressDialog(getActivity());
-        // Showing progress dialog before making http request
-        pDialog.setMessage("Loading...");
-        pDialog.show();
+        return ToDoLayout;
+    }
 
+
+
+    public void fetchInitiateToDos(){
+    }
+
+
+    public void fetchUnderProgressToDos(){
 
         // Creating volley request obj
         JsonArrayRequest toDoReq = new JsonArrayRequest(url,
@@ -73,7 +84,6 @@ public class ToDoS extends Fragment{
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(TAG, response.toString());
-                        hidePDialog();
 
                         // Parsing json
                         for (int i = 0; i < response.length(); i++) {
@@ -84,35 +94,50 @@ public class ToDoS extends Fragment{
                                 task.setUserName(obj.getString("name"));
                                 task.setTaskTitle(obj.getString("title"));
                                 task.setThumbnailUrl(obj.getString("image"));
-                                task.setPriorityID(obj.getInt("priority"));
+
 
                                 // adding task to tasks array
-                                tasksList.add(task);
+                                if (obj.getString("status").equalsIgnoreCase("pending")){
+
+                                    task.setStatus(obj.getString("status"));
+                                    newToDoList.add(task);
+                                }
+                                else {
+                                    task.setPriorityID(obj.getInt("priority"));
+                                    toDosList.add(task);
+                                }
+
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
                         }
-                        if (tasksList.size()!=0)
+                        if (toDosList.size() !=0 || newToDoList.size()!=0)
                         {
                             noTasks.setVisibility(View.GONE);
-                            adapter = new ToDoListAdapter(getActivity(), tasksList);
-                            listView.setAdapter(adapter);
+
+                            adapter = new ToDoListAdapter(getActivity(), toDosList);
+                            underProgressListView.setAdapter(adapter);
+
+                            newAdapter = new NewToDoListAdapter(getActivity(), newToDoList);
+                            pendingListView.setAdapter(newAdapter);
                         }
 
                         else
-                        noTasks.setVisibility(View.VISIBLE);
+                            noTasks.setVisibility(View.VISIBLE);
 
                         // notifying list adapter about data changes
                         // so that it renders the list view with updated data
                         adapter.notifyDataSetChanged();
+                        newAdapter.notifyDataSetChanged();
+
+
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d(TAG, "Error: " + error.getMessage());
-                hidePDialog();
 
             }
         });
@@ -120,22 +145,10 @@ public class ToDoS extends Fragment{
         // Adding request to request queue
         VolleySkeleton.getInstance().addToRequestQueue(toDoReq);
 
-        return ToDoLayout;
     }
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        hidePDialog();
-    }
 
-    private void hidePDialog() {
-        if (pDialog != null) {
-            pDialog.dismiss();
-            pDialog = null;
-        }
-    }
 
 
 }

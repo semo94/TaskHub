@@ -40,5 +40,6 @@
     <string name="err_msg_email">Please enter a valid email address</string>
     <string name="guideLine_text">You are one step away from getting tranquility, please provide your name, email and profile photo below:</string>
     <string name="done">Done</string>
+    <string name="pending_tasks">New Tasks:------------------------------------</string>
 
 </resources>

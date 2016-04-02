@@ -43,7 +43,6 @@ public class Tasks {
         this.priorityID = priorityID;
     }
 
-
     public String getUserName() {
         return userName;
     }

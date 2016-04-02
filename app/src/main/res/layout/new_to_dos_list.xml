@@ -10,7 +10,7 @@
     <!-- Thumbnail Image -->
     <com.example.saleem.testgithub.helper.CircularImageView
 
-        android:id="@+id/senderThumbnail"
+        android:id="@+id/newSenderThumbnail"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_alignParentLeft="true"
@@ -21,15 +21,15 @@
 
     <!-- Task owner name -->
     <TextView
-        android:id="@+id/sender_name"
+        android:id="@+id/newSender_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/senderThumbnail"
+        android:layout_alignTop="@+id/newSenderThumbnail"
         android:layout_marginTop="8dp"
-        android:layout_toEndOf="@+id/senderThumbnail"
-        android:layout_toLeftOf="@+id/priority_photo"
-        android:layout_toRightOf="@+id/senderThumbnail"
-        android:layout_toStartOf="@+id/priority_photo"
+        android:layout_toEndOf="@+id/newSenderThumbnail"
+        android:layout_toLeftOf="@+id/initiate_task_status"
+        android:layout_toRightOf="@+id/newSenderThumbnail"
+        android:layout_toStartOf="@+id/initiate_task_status"
         android:ellipsize="end"
         android:maxLines="1"
         android:textSize="@dimen/owner_Name"
@@ -38,28 +38,32 @@
 
     <!-- Task title -->
     <TextView
-        android:id="@+id/toDo_title"
+        android:id="@+id/newToDo_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sender_name"
+        android:layout_below="@id/newSender_name"
         android:layout_marginTop="2dp"
-        android:layout_toEndOf="@+id/senderThumbnail"
-        android:layout_toLeftOf="@+id/priority_photo"
-        android:layout_toRightOf="@+id/senderThumbnail"
-        android:layout_toStartOf="@+id/priority_photo"
+        android:layout_toEndOf="@+id/newSenderThumbnail"
+        android:layout_toLeftOf="@+id/initiate_task_status"
+        android:layout_toRightOf="@+id/newSenderThumbnail"
+        android:layout_toStartOf="@+id/initiate_task_status"
         android:ellipsize="end"
         android:maxLines="1"
         android:textSize="@dimen/task_title"/>
 
 
-    <!-- Priority identifier -->
-    <ImageView
-        android:id="@+id/priority_photo"
-        android:layout_width="16dp"
-        android:layout_height="64dp"
+    <!-- Task status -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/initiate_task_status"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        tools:ignore="ContentDescription"/>
+        android:layout_below="@id/newSender_name"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:textStyle="bold" />
 
 
 

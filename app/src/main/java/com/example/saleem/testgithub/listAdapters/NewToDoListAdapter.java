@@ -2,12 +2,12 @@ package com.example.saleem.testgithub.listAdapters;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.saleem.testgithub.R;
@@ -17,21 +17,16 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ToDoListAdapter extends BaseAdapter {
+public class NewToDoListAdapter extends BaseAdapter  {
+
     private FragmentActivity activity;
     private LayoutInflater inflater;
     private List<Tasks> tasksItems;
 
-    //private List<Users> usersItems;
-   // ImageLoader imageLoader = VolleySkeleton.getInstance().getImageLoader();
-
-    public ToDoListAdapter(FragmentActivity activity, List<Tasks> tasksItems) {
+    public NewToDoListAdapter(FragmentActivity activity, List<Tasks> tasksItems) {
         this.activity = activity;
         this.tasksItems = tasksItems;
-        //this.usersItems = usersItems;
     }
-
-
 
     @Override
     public int getCount() {
@@ -49,8 +44,6 @@ public class ToDoListAdapter extends BaseAdapter {
     }
 
 
-
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -58,13 +51,15 @@ public class ToDoListAdapter extends BaseAdapter {
             inflater = (LayoutInflater) activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
-            convertView = inflater.inflate(R.layout.to_dos_list, null);
+            convertView = inflater.inflate(R.layout.new_to_dos_list, null);
+        
+
 
         CircularImageView thumbNail = (CircularImageView) convertView
-                .findViewById(R.id.senderThumbnail);
-        TextView name= (TextView) convertView.findViewById(R.id.sender_name);
-        TextView taskSubject = (TextView) convertView.findViewById(R.id.toDo_title);
-        ImageView priority_photo = (ImageView) convertView.findViewById(R.id.priority_photo);
+                .findViewById(R.id.newSenderThumbnail);
+        TextView name= (TextView) convertView.findViewById(R.id.newSender_name);
+        TextView taskSubject = (TextView) convertView.findViewById(R.id.newToDo_title);
+        TextView initiateStatus = (TextView) convertView.findViewById(R.id.initiate_task_status);
 
         // getting list data for the row
         Tasks t = tasksItems.get(position);
@@ -81,22 +76,15 @@ public class ToDoListAdapter extends BaseAdapter {
         // task title
         taskSubject.setText(t.getTaskTitle());
 
-        // priority label
+        // initiate status
 
-        switch (t.getPriorityID()){
-            case 0: priority_photo.setImageResource(R.drawable.low);
-                break;
-            case 1: priority_photo.setImageResource(R.drawable.mid);
-                break;
-            case 2: priority_photo.setImageResource(R.drawable.high);
-                break;
-            case 3: priority_photo.setImageResource(R.drawable.critical);
-
-        }
-
+        initiateStatus.setText(t.getStatus());
+        initiateStatus.setTextColor(Color.rgb(244, 67, 54));
 
 
         return convertView;
     }
+
+
 
 }

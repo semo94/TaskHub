@@ -17,7 +17,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingTop="32dp"
-            android:gravity="left">
+            android:gravity="start">
 
             <TextView
                 android:layout_width="match_parent"
@@ -47,8 +47,10 @@
                     android:spinnerMode="dropdown"
                     android:backgroundTint="@color/colorAccent"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:ems="13"
-                    android:layout_marginRight="22dp" />
+                    android:layout_marginRight="22dp"
+                    android:layout_marginEnd="22dp"/>
 
                 <LinearLayout
                     android:orientation="horizontal"
@@ -104,7 +106,6 @@
             android:id="@+id/layout_otp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:paddingTop="32dp">
@@ -117,7 +118,6 @@
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:text="@string/msg_sit_back"
-                android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
             <TextView
@@ -128,14 +128,12 @@
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
                 android:text="@string/msg_manual_otp"
-                android:textColor="@android:color/white"
                 android:textSize="12sp" />
 
             <EditText
                 android:id="@+id/inputOtp"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_horizontal"
                 android:hint="@string/lbl_enter_otp"
@@ -143,7 +141,7 @@
                 android:maxLength="6"
                 android:padding="10dp"
                 android:textCursorDrawable="@null"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/btn_verify_otp"
@@ -151,11 +149,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="25dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/colorPrimary"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:text="@string/lbl_submit"
-                android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:singleLine="false" />
 
@@ -189,7 +186,6 @@
             android:id="@+id/txt_edit_mobile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
             android:textSize="16sp" />
 
         <ImageButton
@@ -197,6 +193,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:background="@null"
             android:src="@drawable/ic_edit_mobile"
             android:contentDescription="@string/edit_number_des" />
