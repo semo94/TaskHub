@@ -42,4 +42,6 @@
     <string name="done">Done</string>
     <string name="pending_tasks">New Tasks:------------------------------------</string>
 
+    <string name="delete">Delete</string>
+
 </resources>
