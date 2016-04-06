@@ -41,7 +41,7 @@ public class FullScreenImageViewerActivity extends AppCompatActivity{
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(activityTitle);
-        Picasso.with(this).load(imagePath).into(image);
+        image.setImageURI(imagePath);
     }
 
 

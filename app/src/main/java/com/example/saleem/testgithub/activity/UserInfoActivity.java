@@ -45,7 +45,6 @@ public class UserInfoActivity extends SetupUI {
     int REQUEST_CAMERA = 0,SELECT_FILE = 1, RESIZE_PICTURE_REQUEST_CODE = 2, VIEW_IMAGE_FULL_SCREEN = 3;
     private String UPLOAD_URL ="http://www.sbts.ga/semo94/TaskHub/upload.php";
     private CircularImageView circularImageView;
-    private Uri selectedPhotoUri;
     private String KEY_IMAGE = "image";
     private String KEY_NAME = "name";
     private Bitmap bitmap;
@@ -145,7 +144,7 @@ public class UserInfoActivity extends SetupUI {
     private void selectImage() {
         if (isPhotoSelected){
             Intent intent = new Intent(this,FullScreenImageViewerActivity.class);
-            intent.putExtra(FullScreenImageViewerActivity.PATH_ARG,selectedPhotoUri);
+            intent.putExtra(FullScreenImageViewerActivity.PATH_ARG,Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
             intent.putExtra(FullScreenImageViewerActivity.TITLE_ARG,"Your Photo");
             startActivityForResult(intent,VIEW_IMAGE_FULL_SCREEN);
 
@@ -181,19 +180,22 @@ public class UserInfoActivity extends SetupUI {
             if (requestCode == REQUEST_CAMERA) {
                 assert data != null;
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                selectedPhotoUri = PhotoManager.CreateImageFile(thumbnail);
-                openCropActivity();
+                boolean isOK = PhotoManager.CreateImageFile(this,thumbnail);
+                if (isOK){
+                    openCropActivity(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
+                }else {
+                    Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
+                }
+
             }
 
             if (requestCode == SELECT_FILE ){
-                selectedPhotoUri = data.getData();
-                openCropActivity();
+                openCropActivity(data.getData());
             }
 
             if (requestCode == RESIZE_PICTURE_REQUEST_CODE){
                 circularImageView.setImageURI(null);
-                selectedPhotoUri= (Uri)data.getParcelableExtra(ResizeImageActivity.OUTPUT_PHOTO_URI_ARG);
-                circularImageView.setImageURI(selectedPhotoUri);
+                circularImageView.setImageURI(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
                 isPhotoSelected = true;
             }
 
@@ -202,6 +204,7 @@ public class UserInfoActivity extends SetupUI {
                 if (isDeleted){
                     isPhotoSelected = false;
                     circularImageView.setImageResource(R.drawable.default_profile);
+                    deleteFile(PhotoManager.USER_PHOTO_FILE_NAME);
                 }
             }
         }
@@ -265,13 +268,10 @@ public class UserInfoActivity extends SetupUI {
         requestQueue.add(stringRequest);
     }
 
-    private void openCropActivity(){
-        if (selectedPhotoUri == null || selectedPhotoUri.equals(Uri.EMPTY)){
-            Toast.makeText(this,"Load Image Failed",Toast.LENGTH_LONG).show();
-        }else{
-            Intent intent = new Intent(this,ResizeImageActivity.class);
-            intent.putExtra(ResizeImageActivity.INPUT_PHOTO_URI_ARG, selectedPhotoUri);
-            startActivityForResult(intent,RESIZE_PICTURE_REQUEST_CODE);
-        }
+    private void openCropActivity(Uri photoPath){
+        Intent intent = new Intent(this,ResizeImageActivity.class);
+        intent.putExtra(ResizeImageActivity.INPUT_PHOTO_URI_ARG, photoPath);
+        startActivityForResult(intent,RESIZE_PICTURE_REQUEST_CODE);
+
     }
 }

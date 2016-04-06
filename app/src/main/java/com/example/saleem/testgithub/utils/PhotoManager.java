@@ -14,6 +14,9 @@ import java.io.OutputStream;
 
 public class PhotoManager {
 
+
+    public static final String USER_PHOTO_FILE_NAME = "Temp_user_photo";
+
     public static File createTempFile(long id) throws IOException {
         File externalStoragePublicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         File RPDir = new File(externalStoragePublicDirectory+File.separator + "Task Hup");
@@ -25,16 +28,17 @@ public class PhotoManager {
         }
     }
 
-    public static Uri CreateImageFile(Bitmap bitmap){
+    public static boolean CreateImageFile(Context context,Bitmap bitmap){
         FileOutputStream out = null;
         try {
-            File file = createTempFile(-1);
-            out = new FileOutputStream(file);
+            //File file = createTempFile(-1);
+
+            out = context.openFileOutput(USER_PHOTO_FILE_NAME, Context.MODE_PRIVATE);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            return Uri.fromFile(file);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return false;
         } finally {
             try {
                 if (out != null) {
