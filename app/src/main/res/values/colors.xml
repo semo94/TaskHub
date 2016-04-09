@@ -28,4 +28,9 @@
     <color name="NewList_row_hover_start_color">#FFCDD2</color>
     <color name="NewList_row_hover_end_color">#FFCDD2</color>
 
+    <color name="critical">#B71C1C</color>
+    <color name="high">#E65100</color>
+    <color name="mid">#FFC107</color>
+    <color name="low">#43A047</color>
+
 </resources>

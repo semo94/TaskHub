@@ -22,7 +22,8 @@
         android:layout_height="wrap_content"
         android:text="@string/guideLine_text"
         android:textSize="16sp"
-        android:id="@+id/warmingUp" />
+        android:id="@+id/warmingUp"
+        android:textAlignment="center" />
 
     <com.example.saleem.testgithub.helper.CircularImageView
         android:layout_width="150dp"

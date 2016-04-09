@@ -32,6 +32,7 @@ public class HttpService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             String otp = intent.getStringExtra("otp");
+           // Log.d("ADebugTag", "Value: " + (otp));
             verifyOtp(otp);
         }
     }
@@ -68,9 +69,8 @@ public class HttpService extends IntentService {
                         pref.createLogin(mobile);
 
                         Intent intent = new Intent(HttpService.this, UserInfoActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 
                     } else {

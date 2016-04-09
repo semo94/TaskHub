@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Checking if user session
         // if not logged in, take user to sms screen
-    /*    pref = new PrefManager(getApplicationContext());
+        pref = new PrefManager(getApplicationContext());
         if (!pref.isLoggedIn()) {
             logout();
         }
-    */
+
 
         // Run a task to fetch the notifications count
         new FetchCountTask().execute();

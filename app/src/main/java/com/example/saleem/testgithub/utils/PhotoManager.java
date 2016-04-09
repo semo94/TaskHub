@@ -5,12 +5,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class PhotoManager {
 
@@ -19,13 +16,16 @@ public class PhotoManager {
 
     public static File createTempFile(long id) throws IOException {
         File externalStoragePublicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        File RPDir = new File(externalStoragePublicDirectory+File.separator + "Task Hup");
+        File RPDir = new File(externalStoragePublicDirectory+File.separator + "TaskHub");
         RPDir.mkdir();
         if (id == -1){
             return new File(RPDir,"Temp_user_photo.jpg");
         }else{
             return new File(RPDir,"Temp_user_"+id+"_photo.jpg");
         }
+
+
+
     }
 
     public static boolean CreateImageFile(Context context,Bitmap bitmap){
@@ -34,7 +34,7 @@ public class PhotoManager {
             //File file = createTempFile(-1);
 
             out = context.openFileOutput(USER_PHOTO_FILE_NAME, Context.MODE_PRIVATE);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+           bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,7 +54,7 @@ public class PhotoManager {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(uri.getPath());
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
             return true;
         } catch (Exception e) {
             e.printStackTrace();

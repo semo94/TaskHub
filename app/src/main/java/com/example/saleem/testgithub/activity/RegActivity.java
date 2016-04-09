@@ -1,14 +1,17 @@
 package com.example.saleem.testgithub.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,8 +34,8 @@ import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.app.VolleySkeleton;
 import com.example.saleem.testgithub.helper.Country;
-import com.example.saleem.testgithub.utils.PrefManager;
 import com.example.saleem.testgithub.service.HttpService;
+import com.example.saleem.testgithub.utils.PrefManager;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
@@ -57,6 +60,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
     private TextView txtEditMobile;
     private LinearLayout layoutEditMobile;
     private Spinner countrySpinner;
+    private Button btnRequestSms, btnVerifyOtp;
 
     private Map<String,Country> codeCountryMap = new HashMap<>();
     private Country currentCountry;
@@ -71,8 +75,8 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         inputMobile                 = (EditText) findViewById(R.id.inputMobile);
         inputOtp                    = (EditText) findViewById(R.id.inputOtp);
         countryCodeInput            = (EditText) findViewById(R.id.countryCode);
-        Button btnRequestSms        = (Button) findViewById(R.id.btn_request_sms);
-        Button btnVerifyOtp         = (Button) findViewById(R.id.btn_verify_otp);
+        btnRequestSms        = (Button) findViewById(R.id.btn_request_sms);
+        btnVerifyOtp         = (Button) findViewById(R.id.btn_verify_otp);
         progressBar                 = (ProgressBar) findViewById(R.id.progressBar);
         ImageButton btnEditMobile   = (ImageButton) findViewById(R.id.btn_edit_mobile);
         txtEditMobile               = (TextView) findViewById(R.id.txt_edit_mobile);
@@ -145,6 +149,57 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         countryCodeInput.addTextChangedListener(countryCodeTextWatcher);
     }
 
+
+    private void createAndShowAlertDialog() {
+
+        Phonenumber.PhoneNumber number = isValidPhoneNumber();
+        assert number != null;
+        final String  E164PhoneNumber =   phoneUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(Html.fromHtml("Are you sure that \'" + "<b>" + E164PhoneNumber  +"</b>" + "\' is your mobile number ?"))
+                .setTitle("Verify number:")
+                .setCancelable(true)
+                .setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener()
+                        {
+
+                            public void onClick(DialogInterface dialog,
+                                                int id)
+                            {
+                                btnRequestSms.setClickable(false);
+
+
+
+                                // request for sms
+                                progressBar.setVisibility(View.VISIBLE);
+
+                                // saving the mobile number in shared preferences
+                                pref.setMobileNumber(E164PhoneNumber);
+
+                                // requesting for sms
+                                requestForSMS(E164PhoneNumber);
+
+                                dialog.cancel();
+                            }
+                        })
+                .setNegativeButton("Edit",
+                        new DialogInterface.OnClickListener()
+                        {
+
+                            public void onClick(DialogInterface dialog,
+                                                int id)
+                            {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        TextView textView = (TextView) dialog.findViewById(android.R.id.message);
+        assert textView != null;
+        textView.setTextSize(16);
+    }
+
     private void prepareMap() {
         try {
             ArrayList<Country> countries = Country.countriesList(getApplicationContext());
@@ -184,22 +239,18 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
      * Validating user details form
      */
     private void validateForm() {
+
         Phonenumber.PhoneNumber number = isValidPhoneNumber();
         // validating mobile number
         if (number != null) {
 
-            String E164PhoneNumber =   phoneUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
+            createAndShowAlertDialog();
 
-            // request for sms
-            progressBar.setVisibility(View.VISIBLE);
 
-            // saving the mobile number in shared preferences
-            pref.setMobileNumber(E164PhoneNumber);
-
-            // requesting for sms
-            requestForSMS(E164PhoneNumber);
         } else {
             Toast.makeText(getApplicationContext(), "Please enter valid mobile number", Toast.LENGTH_SHORT).show();
+          btnRequestSms.setClickable(true);
+
         }
     }
 
@@ -243,6 +294,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                                 "Error: " + message,
                                 Toast.LENGTH_LONG).show();
                         Log.e(TAG, "error=true");
+                        btnRequestSms.setClickable(true);
                     }
 
                     // hiding the progress bar
@@ -253,6 +305,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
                     Log.e(TAG, "catch e");
+                   btnRequestSms.setClickable(true);
 
                              progressBar.setVisibility(View.GONE);
                 }
@@ -265,6 +318,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                 Log.e(TAG, "Error: " + error.getMessage());
                 Toast.makeText(getApplicationContext(),
                         error.getMessage(), Toast.LENGTH_SHORT).show();
+                btnRequestSms.setClickable(true);
                 progressBar.setVisibility(View.GONE);
             }
         }) {
@@ -313,7 +367,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         {
             String mobile   = inputMobile.getText().toString().trim();
             String code     = countryCodeInput.getText().toString().trim();
-            Phonenumber.PhoneNumber number = phoneUtil.parse(mobile, ((Country)codeCountryMap.get(code)).getIso().toUpperCase());
+            Phonenumber.PhoneNumber number = phoneUtil.parse(mobile, codeCountryMap.get(code).getIso().toUpperCase());
             phoneUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
             if (phoneUtil.isValidNumberForRegion(number, currentCountry.getIso().toUpperCase())){
                 return number;

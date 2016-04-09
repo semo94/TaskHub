@@ -10,7 +10,6 @@
     <string name="reg_label">Verify your phone number</string>
 
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="No_ToDo">There is no tasks to do. enjoy your day :)</string>
     <string name="No_Needs">Your needs list is empty, press + button in "Contacts" to start assigning tasks</string>
     <string name="No_Contacts">No users are using this app in your contact list :(</string>
@@ -31,17 +30,30 @@
     <string name="action_deactivate">Deactivate account</string>
 
     <string name="search">Search</string>
-
+    <string name="edit">Edit</string>
 
     <string name="hint_name">Full Name</string>
     <string name="hint_email">Email</string>
     <string name="btn_startApp">Enjoy your TaskHub :)</string>
     <string name="err_msg_name">Please enter your full name</string>
+    <string name="err_msg_Title">Task title field is required!</string>
+    <string name="err_msg_Deadline">Deadline for task is required!</string>
     <string name="err_msg_email">Please enter a valid email address</string>
     <string name="guideLine_text">You are one step away from getting tranquility, please provide your name, email and profile photo below:</string>
     <string name="done">Done</string>
     <string name="pending_tasks">New Tasks:------------------------------------</string>
 
     <string name="delete">Delete</string>
+    <string name="change">change_photo</string>
+    <string name="title_activity_assign_task">Assign a task</string>
+
+
+    <string name="hint_task_title">Task Title</string>
+    <string name="hint_task_des">Description</string>
+    <string name="hint_deadLine">Dead Line</string>
+    <string name="assign_task">Assign Task</string>
+    <string name="speech_prompt">Say something&#8230;</string>
+    <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
+    <string name="select_attach">Select attachment photo here</string>
 
 </resources>

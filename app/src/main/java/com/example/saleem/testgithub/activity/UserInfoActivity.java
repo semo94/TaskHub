@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
@@ -28,12 +27,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.helper.CircularImageView;
 import com.example.saleem.testgithub.utils.PhotoManager;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -43,7 +38,7 @@ public class UserInfoActivity extends SetupUI {
     private TextInputLayout inputLayoutName, inputLayoutEmail;
     private Button btnSignUp;
     int REQUEST_CAMERA = 0,SELECT_FILE = 1, RESIZE_PICTURE_REQUEST_CODE = 2, VIEW_IMAGE_FULL_SCREEN = 3;
-    private String UPLOAD_URL ="http://www.sbts.ga/semo94/TaskHub/upload.php";
+    private String UPLOAD_URL ="http://www.taskhub.tk/semo94/TaskHub/upload.php";
     private CircularImageView circularImageView;
     private String KEY_IMAGE = "image";
     private String KEY_NAME = "name";
@@ -63,6 +58,7 @@ public class UserInfoActivity extends SetupUI {
         inputName = (EditText) findViewById(R.id.input_name);
         inputEmail = (EditText) findViewById(R.id.input_email);
         btnSignUp = (Button) findViewById(R.id.btn_signup);
+        btnSignUp.setTextColor(getResources().getColor(R.color.white));
         circularImageView = (CircularImageView) findViewById(R.id.imageView);
 
 
@@ -141,7 +137,7 @@ public class UserInfoActivity extends SetupUI {
         }
     }
 
-    private void selectImage() {
+    public void selectImage() {
         if (isPhotoSelected){
             Intent intent = new Intent(this,FullScreenImageViewerActivity.class);
             intent.putExtra(FullScreenImageViewerActivity.PATH_ARG,Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
@@ -201,10 +197,19 @@ public class UserInfoActivity extends SetupUI {
 
             if (requestCode == VIEW_IMAGE_FULL_SCREEN){
                 boolean isDeleted = data.getBooleanExtra(FullScreenImageViewerActivity.IS_DELETED_ARG,false);
+                boolean isChanged = data.getBooleanExtra(FullScreenImageViewerActivity.IS_CHANGED_ARG,false);
+
                 if (isDeleted){
                     isPhotoSelected = false;
                     circularImageView.setImageResource(R.drawable.default_profile);
                     deleteFile(PhotoManager.USER_PHOTO_FILE_NAME);
+                }
+
+                if (isChanged && requestCode==RESIZE_PICTURE_REQUEST_CODE){
+                    circularImageView.setImageURI(null);
+                    circularImageView.setImageURI(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
+                    isPhotoSelected = true;
+
                 }
             }
         }

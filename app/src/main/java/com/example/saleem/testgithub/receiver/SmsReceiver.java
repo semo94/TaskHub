@@ -29,18 +29,18 @@ public class SmsReceiver extends BroadcastReceiver {
                     Log.e(TAG, "Received SMS: " + message + ", Sender: " + senderAddress);
 
                     // if the SMS is not from our gateway, ignore the message
-                    if (!senderAddress.toLowerCase().contains(Config.SMS_ORIGIN.toLowerCase())) {
-                        return;
-                    }
+                  //  if (!senderAddress.toLowerCase().contains(Config.SMS_ORIGIN.toLowerCase())) {
+                  //      return;
+                   // }
 
                     // verification code from sms
                     String verificationCode = getVerificationCode(message);
 
-                    Log.e(TAG, "OTP received: " + verificationCode);
+                    Log.d(TAG, "OTP received: " + verificationCode);
 
-                    Intent hhtpIntent = new Intent(context, HttpService.class);
-                    hhtpIntent.putExtra("otp", verificationCode);
-                    context.startService(hhtpIntent);
+                    Intent httpIntent = new Intent(context, HttpService.class);
+                    httpIntent.putExtra("otp", verificationCode);
+                    context.startService(httpIntent);
                 }
             }
         } catch (Exception e) {
@@ -52,7 +52,8 @@ public class SmsReceiver extends BroadcastReceiver {
      * Getting the OTP from sms message body
      * ':' is the separator of OTP from the message
      *
-
+     * @param message
+     * @return
      */
     private String getVerificationCode(String message) {
         String code = null;
