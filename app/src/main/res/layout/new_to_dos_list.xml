@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/list_row_selector"
+    android:background="@color/NewList_row_hover_end_color"
+
     android:padding="8dp">
 
 

@@ -52,8 +52,6 @@ public class NewToDoListAdapter extends BaseAdapter  {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView == null)
             convertView = inflater.inflate(R.layout.new_to_dos_list, null);
-        
-
 
         CircularImageView thumbNail = (CircularImageView) convertView
                 .findViewById(R.id.newSenderThumbnail);

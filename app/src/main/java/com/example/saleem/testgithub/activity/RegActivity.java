@@ -3,6 +3,7 @@ package com.example.saleem.testgithub.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -34,6 +35,7 @@ import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.app.VolleySkeleton;
 import com.example.saleem.testgithub.helper.Country;
+import com.example.saleem.testgithub.receiver.SmsReceiver;
 import com.example.saleem.testgithub.service.HttpService;
 import com.example.saleem.testgithub.utils.PrefManager;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -53,6 +55,9 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
 
     private static String TAG = RegActivity.class.getSimpleName();
     private ViewPager viewPager;
+
+    private SmsReceiver smsReceiver;
+    final IntentFilter smsFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
 
     private EditText inputMobile, inputOtp,countryCodeInput;
     private ProgressBar progressBar;
@@ -91,6 +96,10 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         btnRequestSms.setTextColor(Color.WHITE);
         btnVerifyOtp.setTextColor(Color.WHITE);
 
+        // register and fire BroadcastReceiver for sms detection
+        smsFilter.setPriority(9999);
+        this.smsReceiver = new SmsReceiver();
+        this.registerReceiver(this.smsReceiver, smsFilter);
 
         // hiding the edit mobile number
         layoutEditMobile.setVisibility(View.GONE);
@@ -268,7 +277,6 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                 Log.d(TAG, response);
 
                 try {
-//                    JSONObject responseObj = new JSONArray(response).getJSONObject(0);
                    JSONObject responseObj = new JSONObject(response);
 
                     // Parsing json object response
@@ -286,8 +294,9 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                         viewPager.setCurrentItem(1);
                         txtEditMobile.setText(pref.getMobileNumber());
                         layoutEditMobile.setVisibility(View.VISIBLE);
-
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+
 
                     } else {
                         Toast.makeText(getApplicationContext(),
@@ -434,7 +443,6 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
             }
         }
     }
-
 
 
     private void displayCountryInfo(Country selectedCountry) {

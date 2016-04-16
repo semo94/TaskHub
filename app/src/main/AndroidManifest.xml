@@ -30,17 +30,7 @@
             </intent-filter>
         </activity>
 
-        <!-- SMS Receiver -->
-        <receiver android:name=".receiver.SmsReceiver">
-            <intent-filter android:priority="99999">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
 
-        <!-- Intent service -->
-        <service
-            android:name=".service.HttpService"
-            android:exported="false" />
 
         <activity
             android:name=".activity.RegActivity"
@@ -71,6 +61,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.saleem.testgithub.activity.MainActivity" />
         </activity>
+
+
+        <!-- SMS Receiver -->
+        <receiver android:name=".receiver.SmsReceiver"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Intent service -->
+        <service
+            android:name=".service.HttpService"
+            android:exported="false" />
 
     </application>
 

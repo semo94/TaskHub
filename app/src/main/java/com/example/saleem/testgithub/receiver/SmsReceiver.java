@@ -14,6 +14,7 @@ import com.example.saleem.testgithub.service.HttpService;
 public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = SmsReceiver.class.getSimpleName();
 
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -29,18 +30,18 @@ public class SmsReceiver extends BroadcastReceiver {
                     Log.e(TAG, "Received SMS: " + message + ", Sender: " + senderAddress);
 
                     // if the SMS is not from our gateway, ignore the message
-                  //  if (!senderAddress.toLowerCase().contains(Config.SMS_ORIGIN.toLowerCase())) {
-                  //      return;
-                   // }
+//                    if (!senderAddress.toLowerCase().contains(Config.SMS_ORIGIN.toLowerCase())) {
+//                        return;
+//                    }
 
                     // verification code from sms
                     String verificationCode = getVerificationCode(message);
 
-                    Log.d(TAG, "OTP received: " + verificationCode);
+                    Log.e(TAG, "OTP received: " + verificationCode);
 
-                    Intent httpIntent = new Intent(context, HttpService.class);
-                    httpIntent.putExtra("otp", verificationCode);
-                    context.startService(httpIntent);
+                    Intent hhtpIntent = new Intent(context, HttpService.class);
+                    hhtpIntent.putExtra("otp", verificationCode);
+                    context.startService(hhtpIntent);
                 }
             }
         } catch (Exception e) {

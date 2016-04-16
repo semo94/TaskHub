@@ -3,8 +3,8 @@ package com.example.saleem.testgithub.app;
 
 public class Config {
     // server URL configuration
-    public static final String URL_REQUEST_SMS = "http://www.taskhub.tk/semo94/TaskHub/request_sms.php";
-    public static final String URL_VERIFY_OTP = "http://www.taskhub.tk/semo94/TaskHub/verify_otp.php";
+    public static final String URL_REQUEST_SMS = "http://www.taskhub.tk/semo94/TaskHub/APIs/request_sms.php";
+    public static final String URL_VERIFY_OTP = "http://www.taskhub.tk/semo94/TaskHub/APIs/verify_otp.php";
 
     // SMS provider identification
     // It should match with your SMS gateway origin
