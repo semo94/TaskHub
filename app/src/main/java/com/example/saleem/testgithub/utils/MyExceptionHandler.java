@@ -31,6 +31,7 @@ public class MyExceptionHandler implements
         ex.printStackTrace(new PrintWriter(stackTrace));
         Log.e("Exiption " + className, stackTrace.toString());
 
+
         Intent intent = new Intent(myContext, MainActivity.class);
         intent.putExtra("StackTrace", stackTrace.toString() + " ");
         intent.putExtra("ClassName", className + " ");
