@@ -12,7 +12,8 @@ import java.io.IOException;
 public class PhotoManager {
 
 
-    public static final String USER_PHOTO_FILE_NAME = "Temp_user_photo";
+    public static final String USER_PHOTO_FILE_NAME         = "Temp_user_photo";
+    public static final String TASK_ATTACHMENT_FILE_NAME    = "Temp_attachment_photo";
 
     public static File createTempFile(long id) throws IOException {
         File externalStoragePublicDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
@@ -28,12 +29,10 @@ public class PhotoManager {
 
     }
 
-    public static boolean CreateImageFile(Context context,Bitmap bitmap){
+    public static boolean CreateImageFile(Context context,String fileName,Bitmap bitmap){
         FileOutputStream out = null;
         try {
-            //File file = createTempFile(-1);
-
-            out = context.openFileOutput(USER_PHOTO_FILE_NAME, Context.MODE_PRIVATE);
+            out = context.openFileOutput(fileName, Context.MODE_PRIVATE);
            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
             return true;
         } catch (Exception e) {

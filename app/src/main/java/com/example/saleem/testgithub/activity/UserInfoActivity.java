@@ -176,7 +176,7 @@ public class UserInfoActivity extends SetupUI {
             if (requestCode == REQUEST_CAMERA) {
                 assert data != null;
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                boolean isOK = PhotoManager.CreateImageFile(this,thumbnail);
+                boolean isOK = PhotoManager.CreateImageFile(this,PhotoManager.USER_PHOTO_FILE_NAME,thumbnail);
                 if (isOK){
                     openCropActivity(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
                 }else {
@@ -276,6 +276,7 @@ public class UserInfoActivity extends SetupUI {
     private void openCropActivity(Uri photoPath){
         Intent intent = new Intent(this,ResizeImageActivity.class);
         intent.putExtra(ResizeImageActivity.INPUT_PHOTO_URI_ARG, photoPath);
+        intent.putExtra(ResizeImageActivity.INPUT_PHOTO_NAME, PhotoManager.USER_PHOTO_FILE_NAME);
         startActivityForResult(intent,RESIZE_PICTURE_REQUEST_CODE);
 
     }

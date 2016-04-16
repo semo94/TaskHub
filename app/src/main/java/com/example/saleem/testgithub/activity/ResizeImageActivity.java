@@ -18,10 +18,12 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class ResizeImageActivity extends AppCompatActivity {
 
-    public static final String INPUT_PHOTO_URI_ARG = "input_photo_uri_arg";
+    public static final String INPUT_PHOTO_URI_ARG  = "input_photo_uri_arg";
+    public static final String INPUT_PHOTO_NAME     = "input_photo_name_arg";
 
     private CropImageView cropImageView;
-    Uri inputPhotoUri ;
+    Uri     inputPhotoUri ;
+    String  photoName;
     private ProgressDialog dialog;
 
 
@@ -42,6 +44,7 @@ public class ResizeImageActivity extends AppCompatActivity {
 
         if (getIntent() != null){
             inputPhotoUri = getIntent().getParcelableExtra(INPUT_PHOTO_URI_ARG);
+            photoName     = getIntent().getStringExtra(INPUT_PHOTO_NAME);
             if (inputPhotoUri == null){
                 setResult(RESULT_CANCELED);
                 finish();
@@ -92,7 +95,7 @@ public class ResizeImageActivity extends AppCompatActivity {
     }
 
     private boolean saveImage() {
-        return PhotoManager.CreateImageFile(this,cropImageView.getCroppedImage());
+        return PhotoManager.CreateImageFile(this,photoName,cropImageView.getCroppedImage());
     }
 }
 
