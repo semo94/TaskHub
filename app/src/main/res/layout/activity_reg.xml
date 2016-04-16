@@ -45,7 +45,7 @@
                     android:clickable="true"
                     android:layout_marginBottom="16dp"
                     android:spinnerMode="dropdown"
-                    android:backgroundTint="@color/colorAccent"
+                    android:background="@color/colorAccent"
                     android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
                     android:ems="13"
@@ -71,7 +71,7 @@
                         android:maxLength="3"
                         android:ems="4"
                         android:id="@+id/countryCode"
-                        android:backgroundTint="@color/colorAccent" />
+                        />
 
                     <EditText
                         android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
                         android:ems="10"
                         android:id="@+id/inputMobile"
                         android:hint="@string/inputMobile_hint"
-                        android:backgroundTint="@color/colorAccent" />
+                       />
                 </LinearLayout>
 
 
@@ -169,8 +169,6 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginBottom="60dp"
-        android:indeterminateTint="@color/colorAccent"
-        android:indeterminateTintMode="src_atop"
         android:visibility="gone" />
 
     <LinearLayout

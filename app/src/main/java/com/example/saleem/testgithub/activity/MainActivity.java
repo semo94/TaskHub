@@ -26,7 +26,7 @@ import com.example.saleem.testgithub.utils.PrefManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int mNotificationsCount = 0;
+    private int mNotificationsCount = 2;
     private PrefManager pref;
 
 
@@ -38,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-
         // Tabs
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setOffscreenPageLimit(3);
         setupViewPager(viewPager);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -55,15 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Run a task to fetch the notifications count
-        new FetchCountTask().execute();
+        updateNotificationsBadge(mNotificationsCount);
 
     }
-
-
-
-
-
-
 
 
     private void setupViewPager(ViewPager viewPager) {
@@ -73,8 +67,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new Contacts(), "Contacts");
         viewPager.setAdapter(adapter);
     }
-
-
 
 
     /**
@@ -96,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
 
-        // Inflate the menu; this adds items to the action bar if it is present.
-        public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
 
@@ -155,21 +147,4 @@ Updates the count of notifications in the ActionBar.
         invalidateOptionsMenu();
     }
 
-    /*
-    Sample AsyncTask to fetch the notifications count
-    */
-    class FetchCountTask extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            // example count. This is where you'd
-            // query your data store for the actual count.
-            return 1;
-        }
-
-        @Override
-        public void onPostExecute(Integer count) {
-            updateNotificationsBadge(count);
-        }
-    }
 }
