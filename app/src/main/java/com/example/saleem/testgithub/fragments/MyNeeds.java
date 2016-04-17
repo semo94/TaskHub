@@ -31,7 +31,7 @@ import java.util.List;
 public class MyNeeds extends Fragment {
 
     // Log tag
-    private static final String TAG = ToDoS.class.getSimpleName();
+
 
     // Tasks json url
     private static final String url = "http://www.taskhub.tk/semo94/TaskHub/JSON/myneeds.json";
@@ -93,7 +93,7 @@ public class MyNeeds extends Fragment {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d(TAG, response.toString());
+
 
                         needsList.clear();
 
@@ -135,7 +135,6 @@ public class MyNeeds extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "Error: " + error.getMessage());
 
             }
         });

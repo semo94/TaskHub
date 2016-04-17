@@ -3,7 +3,9 @@ package com.example.saleem.testgithub.activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
@@ -14,13 +16,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
 
+import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.example.saleem.testgithub.Notification.Utils;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.fragments.Contacts;
 import com.example.saleem.testgithub.fragments.MyNeeds;
 import com.example.saleem.testgithub.fragments.ToDoFragment;
 import com.example.saleem.testgithub.fragments.ViewPagerAdapter;
+import com.example.saleem.testgithub.utils.DrawerInit;
 import com.example.saleem.testgithub.utils.PrefManager;
+import com.mikepenz.materialdrawer.Drawer;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,14 +33,25 @@ public class MainActivity extends AppCompatActivity {
     private int mNotificationsCount = 2;
     private PrefManager pref;
 
+    private MaterialMenuDrawable materialMenu;
+    private Toolbar toolbar;
+    private Drawer drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        materialMenu = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
+        toolbar.setNavigationIcon(materialMenu);
+        this.getSupportActionBar().setTitle("Task Hub");
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.colorAccent));
+        }
+
+        drawer = new DrawerInit(drawer, 0).initDrawer(this, toolbar, materialMenu);
 
         // Tabs
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -47,10 +63,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Checking if user session
         // if not logged in, take user to sms screen
-        pref = new PrefManager(getApplicationContext());
-        if (!pref.isLoggedIn()) {
-            logout();
-        }
+//        pref = new PrefManager(getApplicationContext());
+//        if (!pref.isLoggedIn()) {
+//            logout();
+//        }
 
 
         // Run a task to fetch the notifications count
@@ -146,4 +162,13 @@ Updates the count of notifications in the ActionBar.
         invalidateOptionsMenu();
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (drawer != null) {
+            drawer.setSelection(0, false);
+        }
+    }
 }
