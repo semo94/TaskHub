@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.LayerDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
@@ -19,7 +18,7 @@ import com.example.saleem.testgithub.Notification.Utils;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.fragments.Contacts;
 import com.example.saleem.testgithub.fragments.MyNeeds;
-import com.example.saleem.testgithub.fragments.ToDoS;
+import com.example.saleem.testgithub.fragments.ToDoFragment;
 import com.example.saleem.testgithub.fragments.ViewPagerAdapter;
 import com.example.saleem.testgithub.utils.PrefManager;
 
@@ -63,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MyNeeds(), "My Needs");
-        adapter.addFragment(new ToDoS(), "To Do's");
+        adapter.addFragment(new ToDoFragment(), "To Do's");
         adapter.addFragment(new Contacts(), "Contacts");
         viewPager.setAdapter(adapter);
     }
