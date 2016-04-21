@@ -36,7 +36,7 @@ import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.app.VolleySkeleton;
 import com.example.saleem.testgithub.helper.Country;
 import com.example.saleem.testgithub.receiver.SmsReceiver;
-import com.example.saleem.testgithub.service.HttpService;
+import com.example.saleem.testgithub.utils.HttpService;
 import com.example.saleem.testgithub.utils.PrefManager;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;

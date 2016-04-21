@@ -1,4 +1,4 @@
-package com.example.saleem.testgithub.service;
+package com.example.saleem.testgithub.utils;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.saleem.testgithub.activity.UserInfoActivity;
-
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.app.VolleySkeleton;
 import com.example.saleem.testgithub.utils.PrefManager;
@@ -65,9 +64,9 @@ public class HttpService extends IntentService {
                         JSONObject profileObj = responseObj.getJSONObject("profile");
 
                         String mobile = profileObj.getString("mobile");
-
+                        int id = profileObj.getInt("id");
                         PrefManager pref = new PrefManager(getApplicationContext());
-                        pref.createLogin(mobile);
+                        pref.createLogin(mobile, id);
 
                         Intent intent = new Intent(HttpService.this, UserInfoActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import java.util.HashMap;
+
 public class PrefManager {
 
     // Shared Preferences
@@ -27,6 +29,7 @@ public class PrefManager {
     private static final String KEY_MOBILE_NUMBER = "mobile_number";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private static final String KEY_MOBILE = "mobile";
+    private static final String KEY_ID = "id";
 
     public PrefManager(Context context) {
         this._context = context;
@@ -53,8 +56,9 @@ public class PrefManager {
         return pref.getString(KEY_MOBILE_NUMBER, null);
     }
 
-    public void createLogin( String mobile) {
+    public void createLogin( String mobile, int id) {
         editor.putString(KEY_MOBILE, mobile);
+        editor.putInt(KEY_ID, id);
         editor.putBoolean(KEY_IS_LOGGED_IN, true);
         editor.commit();
     }
@@ -66,6 +70,13 @@ public class PrefManager {
     public void clearSession() {
         editor.clear();
         editor.commit();
+    }
+
+    public HashMap<String, String> getUserDetails() {
+        HashMap<String, String> profile = new HashMap<>();
+        profile.put("id", String.valueOf(pref.getInt(KEY_ID, 0)));
+        profile.put("mobile", pref.getString(KEY_MOBILE, null));
+        return profile;
     }
 
 }

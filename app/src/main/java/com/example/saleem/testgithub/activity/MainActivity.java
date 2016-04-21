@@ -12,6 +12,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -27,6 +28,8 @@ import com.example.saleem.testgithub.utils.DrawerInit;
 import com.example.saleem.testgithub.utils.PrefManager;
 import com.mikepenz.materialdrawer.Drawer;
 
+import java.util.HashMap;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Drawer drawer;
 
+    String UserId;
+    String Mobile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         materialMenu = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
+
         toolbar.setNavigationIcon(materialMenu);
         this.getSupportActionBar().setTitle("Task Hub");
         if (Build.VERSION.SDK_INT >= 21) {
@@ -63,11 +70,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Checking if user session
         // if not logged in, take user to sms screen
-//        pref = new PrefManager(getApplicationContext());
-//        if (!pref.isLoggedIn()) {
-//            logout();
-//        }
-
+        pref = new PrefManager(getApplicationContext());
+        if (!pref.isLoggedIn()) {
+            logout();
+        } else {
+            HashMap<String, String> userDetails = pref.getUserDetails();
+            UserId = userDetails.get("id");
+            Mobile = userDetails.get("mobile");
+        }
+        Log.e("UserId", UserId + " !");
 
         // Run a task to fetch the notifications count
         updateNotificationsBadge(mNotificationsCount);

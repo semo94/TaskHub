@@ -10,7 +10,9 @@ import android.view.View;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.activity.AboutUs;
 import com.example.saleem.testgithub.activity.MainActivity;
+import com.example.saleem.testgithub.activity.Profile;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -25,7 +27,6 @@ public class DrawerInit {
         this.selectedItem = selectedItem;
         this.drawer = drawer;
     }
-
 
     public Drawer initDrawer(final Activity activity, final Toolbar toolbar, final MaterialMenuDrawable materialMenu) {
 
@@ -45,9 +46,11 @@ public class DrawerInit {
                                 myIntent = new Intent(activity, MainActivity.class);
                                 break;
                             case 1:
-                                //   myIntent = new Intent(activity, Profile.class);
+                                   myIntent = new Intent(activity, Profile.class);
                                 break;
-
+                            case 2:
+                                myIntent = new Intent(activity, AboutUs.class);
+                                break;
 
                         }
 
@@ -70,6 +73,5 @@ public class DrawerInit {
     private PrimaryDrawerItem profile = new PrimaryDrawerItem().withName("Profile").withIdentifier(1).withSelectedColorRes(R.color.material_drawer_background).withIcon(R.drawable.profile).withTextColor(Color.parseColor("#FFFFFF")).withIconTintingEnabled(true).withSelectedIconColorRes(R.color.material_drawer_selected_text).withIconColorRes(R.color.white);
     private PrimaryDrawerItem aboutUs = new PrimaryDrawerItem().withName("About Us").withIdentifier(2).withSelectedColorRes(R.color.material_drawer_background).withIcon(R.drawable.about_us).withTextColor(Color.parseColor("#FFFFFF")).withIconTintingEnabled(true).withSelectedIconColorRes(R.color.material_drawer_selected_text).withIconColorRes(R.color.white);
     private PrimaryDrawerItem sittings = new PrimaryDrawerItem().withName("Sittings").withIdentifier(3).withSelectedColorRes(R.color.material_drawer_background).withIcon(R.drawable.settings).withTextColor(Color.parseColor("#FFFFFF")).withIconTintingEnabled(true).withSelectedIconColorRes(R.color.material_drawer_selected_text).withIconColorRes(R.color.white);
-
 
 }

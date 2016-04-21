@@ -9,7 +9,7 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import com.example.saleem.testgithub.app.Config;
-import com.example.saleem.testgithub.service.HttpService;
+import com.example.saleem.testgithub.utils.HttpService;
 
 public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = SmsReceiver.class.getSimpleName();
