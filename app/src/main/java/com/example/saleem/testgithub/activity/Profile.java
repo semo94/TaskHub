@@ -17,8 +17,11 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.balysv.materialmenu.MaterialMenuDrawable;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.gcm.connection.HttpConnect;
+import com.example.saleem.testgithub.utils.CircleTransform;
 import com.example.saleem.testgithub.utils.Connectivity;
 import com.example.saleem.testgithub.utils.DrawerInit;
 import com.example.saleem.testgithub.utils.GlobalConstants;
@@ -26,6 +29,7 @@ import com.example.saleem.testgithub.utils.MyExceptionHandler;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mikepenz.materialdrawer.Drawer;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,8 +54,6 @@ public class Profile extends AppCompatActivity {
     private LinearLayout UserNameLinear, CountryLinear, PhoneLinear, EmailLinear;
     private Intent myIntent;
     // private ProfileItems items;
-    private String firstLetter = "";
-    private TextDrawable profileDrawable;
     private TextDrawable coverDrawable;
     private GetSubscriberResolver getSubscriberResolver = new GetSubscriberResolver();
 
@@ -92,14 +94,18 @@ public class Profile extends AppCompatActivity {
 //                EmailTxt.setText(items.getEmail().toString());
 
 
-        profileDrawable = TextDrawable.builder().beginConfig().withBorder(4).endConfig()
-                .buildRound("S", Profile.this.getResources().getColor(R.color.colorAccent)); // radius in px
-
         coverDrawable = TextDrawable.builder()
                 .buildRect("", Profile.this.getResources().getColor(R.color.colorPrimary));
 
 
-        imgProfile.setImageDrawable(profileDrawable);
+        Picasso.with(Profile.this).load(R.drawable.sal).fit().transform(new CircleTransform()).into(imgProfile);
+        imgProfile.setVisibility(View.INVISIBLE);
+        imgProfile.postDelayed(new Runnable() {
+            public void run() {
+                imgProfile.setVisibility(View.VISIBLE);
+                YoYo.with(Techniques.RollIn).playOn(imgProfile);
+            }
+        }, 1000);
 
         imgCover.setImageDrawable(coverDrawable);
 
