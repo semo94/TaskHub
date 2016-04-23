@@ -1,10 +1,14 @@
 package com.example.saleem.testgithub.utils;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import com.example.saleem.testgithub.app.Config;
@@ -42,6 +46,8 @@ public class UserContacts {
     }
 
     public static void getContactList(Context context) {
+
+
 
         JSONArray phonesArray = new JSONArray();
         Cursor phones = context.getContentResolver().query(
@@ -112,5 +118,6 @@ public class UserContacts {
 
         return num;
     }
+
 
 }

@@ -3,11 +3,14 @@ package com.example.saleem.testgithub.activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.example.saleem.testgithub.Notification.Utils;
@@ -42,7 +46,23 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Drawer drawer;
 
+    private static final int REQUEST_CODE = 0x11;
 
+    String[] permissions = {"android.permission.READ_CONTACTS"};
+     // without sdk version check
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                 UserContacts.getContactList(MainActivity.this);
+            } else {
+                Toast.makeText(getApplicationContext(), "PERMISSION_DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +101,13 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.e("UserId",  GlobalConstants.UserID + " !");
 
-        UserContacts.getContactList(MainActivity.this);
+
+        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP_MR1){
+            requestPermissions(permissions, REQUEST_CODE);
+        }else{
+            UserContacts.getContactList(MainActivity.this);
+        }
+
         // Run a task to fetch the notifications count
         updateNotificationsBadge(mNotificationsCount);
 
