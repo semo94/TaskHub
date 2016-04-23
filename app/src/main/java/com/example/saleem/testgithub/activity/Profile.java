@@ -112,7 +112,8 @@ public class Profile extends AppCompatActivity implements DataBaseAble {
         }
 
         drawer = new DrawerInit(drawer, 1).initDrawer(this, toolbar, materialMenu);
-
+        toolbar.setTitleTextColor(Color.WHITE);
+        materialMenu.setColor(Color.WHITE);
     }
 
     private void initControls() {

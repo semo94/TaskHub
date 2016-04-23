@@ -97,6 +97,7 @@ public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayou
             listView.setAdapter(adapter);
             YoYo.with(Techniques.SlideInUp).playOn(listView);
         } else {
+            listView.setVisibility(View.VISIBLE);
             adapter.restart(items.getMyNeddsList());
         }
     }

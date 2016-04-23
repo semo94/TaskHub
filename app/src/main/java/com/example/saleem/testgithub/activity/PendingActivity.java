@@ -84,7 +84,8 @@ public class PendingActivity extends AppCompatActivity implements DataBaseAble, 
             }
         });
         materialMenu.setIconState(MaterialMenuDrawable.IconState.ARROW);
-
+        toolbar.setTitleTextColor(Color.WHITE);
+        materialMenu.setColor(Color.WHITE);
     }
 
     private void initControls() {
@@ -121,6 +122,7 @@ public class PendingActivity extends AppCompatActivity implements DataBaseAble, 
             listView.setAdapter(adapter);
             YoYo.with(Techniques.SlideInUp).playOn(listView);
         } else {
+            listView.setVisibility(View.VISIBLE);
             adapter.restart(items.getPendingToDoList());
         }
     }
