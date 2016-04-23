@@ -57,6 +57,7 @@ public class AboutUs extends AppCompatActivity {
     }
 
     private void initUI() {
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this, AboutUs.class, "AboutUs"));
         setContentView(R.layout.about_us);
         initControls();
@@ -156,4 +157,9 @@ public class AboutUs extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
 }

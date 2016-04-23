@@ -2,27 +2,27 @@ package com.example.saleem.testgithub.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.TouchDelegate;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.app.Config;
+import com.example.saleem.testgithub.database.ApiHelper;
+import com.example.saleem.testgithub.database.DataBaseAble;
 import com.example.saleem.testgithub.gcm.connection.HttpConnect;
+import com.example.saleem.testgithub.gson.items.PendingItems;
+import com.example.saleem.testgithub.gson.items.ProfileItems;
 import com.example.saleem.testgithub.utils.CircleTransform;
-import com.example.saleem.testgithub.utils.Connectivity;
 import com.example.saleem.testgithub.utils.DrawerInit;
 import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.example.saleem.testgithub.utils.MyExceptionHandler;
@@ -31,89 +31,71 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mikepenz.materialdrawer.Drawer;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by admin on 4/21/2016.
  */
-public class Profile extends AppCompatActivity {
+public class Profile extends AppCompatActivity implements DataBaseAble {
 
     private Drawer drawer;
     private Toolbar toolbar;
     private MaterialMenuDrawable materialMenu;
     private ImageView imgProfile, imgCover;
     private Type listType;
-    private TextView EmailTxt, PhoneTxt, CountryTxt, UserNameTxt;
-    private LinearLayout UserNameLinear, CountryLinear, PhoneLinear, EmailLinear;
+    private TextView EmailTxt, UserNameTxt;
+    private LinearLayout UserNameLinear, EmailLinear;
     private Intent myIntent;
-    // private ProfileItems items;
+    private ProfileItems items;
     private TextDrawable coverDrawable;
     private GetSubscriberResolver getSubscriberResolver = new GetSubscriberResolver();
+    private ApiHelper apiHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initUI();
 
-
         getProfileData();
-
     }
 
     private void getProfileData() {
-//        listType = new TypeToken<ProfileItems>() {
-//        }.getType();
-//        HttpConnect.getData("", HttpConnect.ConnectionType.TempSessionToken, getSubscriberResolver);
-        setUI();
+        listType = new TypeToken<ProfileItems>() {
+        }.getType();
+        this.apiHelper = new ApiHelper(Profile.this);
+        GlobalConstants.db.GetCache(Config.Get_UserInfo, 0, this, apiHelper.App, apiHelper.Cache);
+        HttpConnect.getData(Config.Get_UserInfo, getSubscriberResolver);
     }
 
 
     private void setUI() {
+        UserNameTxt.setText(items.getName().toString());
 
-
-        UserNameLinear.setVisibility(View.VISIBLE);
-        CountryLinear.setVisibility(View.VISIBLE);
-        PhoneLinear.setVisibility(View.VISIBLE);
-
-//                UserNameTxt.setText(items.getName().toString());
-//                firstLetter = items.getName().toString().substring(0, 1);
-
-
-//                CountryTxt.setText(items.getCountryName().toString());
-
-
-//                PhoneTxt.setText(items.getMobile().toString());
-
-//                EmailTxt.setText(items.getEmail().toString());
-
+        EmailTxt.setText(items.getEmail().toString());
 
         coverDrawable = TextDrawable.builder()
-                .buildRect("", Profile.this.getResources().getColor(R.color.colorPrimary));
+                .buildRect("", Profile.this.getResources().getColor(R.color.colorDarkAccent));
 
-
-        Picasso.with(Profile.this).load(R.drawable.sal).fit().transform(new CircleTransform()).into(imgProfile);
+        Picasso.with(Profile.this).load(items.getImage()).placeholder(R.drawable.default_profile).error(R.drawable.default_profile).fit().transform(new CircleTransform()).into(imgProfile);
         imgProfile.setVisibility(View.INVISIBLE);
         imgProfile.postDelayed(new Runnable() {
             public void run() {
                 imgProfile.setVisibility(View.VISIBLE);
                 YoYo.with(Techniques.RollIn).playOn(imgProfile);
             }
-        }, 1000);
+        }, 500);
 
         imgCover.setImageDrawable(coverDrawable);
-
 
     }
 
 
     private void initUI() {
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this, Profile.class, "Profile"));
         setContentView(R.layout.profile);
 
@@ -138,12 +120,8 @@ public class Profile extends AppCompatActivity {
         imgProfile = (ImageView) findViewById(R.id.profileImage);
         imgCover = (ImageView) findViewById(R.id.coverImage);
         EmailTxt = (TextView) findViewById(R.id.EmailTxt);
-        PhoneTxt = (TextView) findViewById(R.id.PhoneTxt);
-        CountryTxt = (TextView) findViewById(R.id.CountryTxt);
         UserNameTxt = (TextView) findViewById(R.id.UserNameTxt);
         UserNameLinear = (LinearLayout) findViewById(R.id.UserNameLinear);
-        CountryLinear = (LinearLayout) findViewById(R.id.CountryLinear);
-        PhoneLinear = (LinearLayout) findViewById(R.id.PhoneLinear);
         EmailLinear = (LinearLayout) findViewById(R.id.EmailLinear);
     }
 
@@ -175,10 +153,40 @@ public class Profile extends AppCompatActivity {
         @Override
         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
             super.onSuccess(statusCode, headers, response);
-            //   items = (ProfileItems) GlobalConstants.gson.fromJson(response.toString(), listType);
+            items = (ProfileItems) GlobalConstants.gson.fromJson(response.toString(), listType);
+            setUI();
+            GlobalConstants.db.SetCache(Config.Get_UserInfo, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
+        }
+    }
+
+
+    @Override
+    public void SetApp_db(String Key, int tag) {
+
+    }
+
+    @Override
+    public void SetCache_db(String Key, int tag) {
+
+    }
+
+    @Override
+    public void GetApp_db(String Key, String Value, int tag) {
+
+    }
+
+    @Override
+    public void GetCache_db(String Key, String Value, int tag) {
+        if (Value != null) {
+            items = (ProfileItems) GlobalConstants.gson.fromJson(Value, listType);
             setUI();
         }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 
 }

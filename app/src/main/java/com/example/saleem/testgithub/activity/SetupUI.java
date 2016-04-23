@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.saleem.testgithub.R;
+
 import static com.example.saleem.testgithub.helper.HideKeyboard.hideSoftKeyboard;
 
 public class SetupUI extends AppCompatActivity {
@@ -42,4 +44,5 @@ public class SetupUI extends AppCompatActivity {
             }
         }
     }
+
 }

@@ -37,20 +37,18 @@ public class UserInfoActivity extends SetupUI {
     private EditText inputName, inputEmail;
     private TextInputLayout inputLayoutName, inputLayoutEmail;
     private Button btnSignUp;
-    int REQUEST_CAMERA = 0,SELECT_FILE = 1, RESIZE_PICTURE_REQUEST_CODE = 2, VIEW_IMAGE_FULL_SCREEN = 3;
-    private String UPLOAD_URL ="http://www.taskhub.tk/semo94/TaskHub/upload.php";
+    int REQUEST_CAMERA = 0, SELECT_FILE = 1, RESIZE_PICTURE_REQUEST_CODE = 2, VIEW_IMAGE_FULL_SCREEN = 3;
+    private String UPLOAD_URL = "http://www.taskhub.tk/semo94/TaskHub/upload.php";
     private CircularImageView circularImageView;
     private String KEY_IMAGE = "image";
     private String KEY_NAME = "name";
     private Bitmap bitmap;
-
-
     private boolean isPhotoSelected;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_user_info);
         setupUI(findViewById(R.id.user_info_activity));
         inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_name);
@@ -79,7 +77,6 @@ public class UserInfoActivity extends SetupUI {
 
             }
         });
-
 
 
     }
@@ -138,14 +135,14 @@ public class UserInfoActivity extends SetupUI {
     }
 
     public void selectImage() {
-        if (isPhotoSelected){
-            Intent intent = new Intent(this,FullScreenImageViewerActivity.class);
-            intent.putExtra(FullScreenImageViewerActivity.PATH_ARG,Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
-            intent.putExtra(FullScreenImageViewerActivity.TITLE_ARG,"Your Photo");
-            startActivityForResult(intent,VIEW_IMAGE_FULL_SCREEN);
+        if (isPhotoSelected) {
+            Intent intent = new Intent(this, FullScreenImageViewerActivity.class);
+            intent.putExtra(FullScreenImageViewerActivity.PATH_ARG, Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
+            intent.putExtra(FullScreenImageViewerActivity.TITLE_ARG, "Your Photo");
+            startActivityForResult(intent, VIEW_IMAGE_FULL_SCREEN);
 
-        }else{
-            final CharSequence[] items = { "Camera", "Library", "Cancel" };
+        } else {
+            final CharSequence[] items = {"Camera", "Library", "Cancel"};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoActivity.this);
             builder.setTitle("Choose one from this options:");
@@ -171,41 +168,40 @@ public class UserInfoActivity extends SetupUI {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK)
-        {
+        if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CAMERA) {
                 assert data != null;
                 Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                boolean isOK = PhotoManager.CreateImageFile(this,PhotoManager.USER_PHOTO_FILE_NAME,thumbnail);
-                if (isOK){
+                boolean isOK = PhotoManager.CreateImageFile(this, PhotoManager.USER_PHOTO_FILE_NAME, thumbnail);
+                if (isOK) {
                     openCropActivity(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
-                }else {
-                    Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
                 }
 
             }
 
-            if (requestCode == SELECT_FILE ){
+            if (requestCode == SELECT_FILE) {
                 openCropActivity(data.getData());
             }
 
-            if (requestCode == RESIZE_PICTURE_REQUEST_CODE){
+            if (requestCode == RESIZE_PICTURE_REQUEST_CODE) {
                 circularImageView.setImageURI(null);
                 circularImageView.setImageURI(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
                 isPhotoSelected = true;
             }
 
-            if (requestCode == VIEW_IMAGE_FULL_SCREEN){
-                boolean isDeleted = data.getBooleanExtra(FullScreenImageViewerActivity.IS_DELETED_ARG,false);
-                boolean isChanged = data.getBooleanExtra(FullScreenImageViewerActivity.IS_CHANGED_ARG,false);
+            if (requestCode == VIEW_IMAGE_FULL_SCREEN) {
+                boolean isDeleted = data.getBooleanExtra(FullScreenImageViewerActivity.IS_DELETED_ARG, false);
+                boolean isChanged = data.getBooleanExtra(FullScreenImageViewerActivity.IS_CHANGED_ARG, false);
 
-                if (isDeleted){
+                if (isDeleted) {
                     isPhotoSelected = false;
                     circularImageView.setImageResource(R.drawable.default_profile);
                     deleteFile(PhotoManager.USER_PHOTO_FILE_NAME);
                 }
 
-                if (isChanged && requestCode==RESIZE_PICTURE_REQUEST_CODE){
+                if (isChanged && requestCode == RESIZE_PICTURE_REQUEST_CODE) {
                     circularImageView.setImageURI(null);
                     circularImageView.setImageURI(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
                     isPhotoSelected = true;
@@ -215,7 +211,7 @@ public class UserInfoActivity extends SetupUI {
         }
     }
 
-    public String getStringImage(Bitmap bmp){
+    public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageBytes = baos.toByteArray();
@@ -223,9 +219,9 @@ public class UserInfoActivity extends SetupUI {
         return encodedImage;
     }
 
-    private void uploadImage(){
+    private void uploadImage() {
         //Showing the progress dialog
-        final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
+        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
                 new Response.Listener<String>() {
                     @Override
@@ -233,7 +229,7 @@ public class UserInfoActivity extends SetupUI {
                         //Disimissing the progress dialog
                         loading.dismiss();
                         //Showing toast message of the response
-                        Toast.makeText(UserInfoActivity.this, s , Toast.LENGTH_LONG).show();
+                        Toast.makeText(UserInfoActivity.this, s, Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -245,7 +241,7 @@ public class UserInfoActivity extends SetupUI {
                         //Showing toast
                         Toast.makeText(UserInfoActivity.this, volleyError.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                }){
+                }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 //Converting Bitmap to String
@@ -255,7 +251,7 @@ public class UserInfoActivity extends SetupUI {
                 String name = inputName.getText().toString().trim();
 
                 //Creating parameters
-                Map <String,String> params = new Hashtable<String, String>();
+                Map<String, String> params = new Hashtable<String, String>();
 
                 //Adding parameters
                 params.put(KEY_IMAGE, image);
@@ -273,11 +269,18 @@ public class UserInfoActivity extends SetupUI {
         requestQueue.add(stringRequest);
     }
 
-    private void openCropActivity(Uri photoPath){
-        Intent intent = new Intent(this,ResizeImageActivity.class);
+    private void openCropActivity(Uri photoPath) {
+        Intent intent = new Intent(this, ResizeImageActivity.class);
         intent.putExtra(ResizeImageActivity.INPUT_PHOTO_URI_ARG, photoPath);
         intent.putExtra(ResizeImageActivity.INPUT_PHOTO_NAME, PhotoManager.USER_PHOTO_FILE_NAME);
-        startActivityForResult(intent,RESIZE_PICTURE_REQUEST_CODE);
+        startActivityForResult(intent, RESIZE_PICTURE_REQUEST_CODE);
 
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 }

@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 
 public class GlobalConstants {
 
-    public static String serverURI = "";
+    public static String UserID = "";
     public static DataBaseAdapter db = new DataBaseAdapter();
     public static Gson gson = new Gson();
 

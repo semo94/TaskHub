@@ -25,7 +25,9 @@ import com.example.saleem.testgithub.fragments.MyNeeds;
 import com.example.saleem.testgithub.fragments.ToDoFragment;
 import com.example.saleem.testgithub.fragments.ViewPagerAdapter;
 import com.example.saleem.testgithub.utils.DrawerInit;
+import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.example.saleem.testgithub.utils.PrefManager;
+import com.example.saleem.testgithub.utils.UserContacts;
 import com.mikepenz.materialdrawer.Drawer;
 
 import java.util.HashMap;
@@ -40,12 +42,11 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Drawer drawer;
 
-    String UserId;
-    String Mobile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -75,11 +76,12 @@ public class MainActivity extends AppCompatActivity {
             logout();
         } else {
             HashMap<String, String> userDetails = pref.getUserDetails();
-            UserId = userDetails.get("id");
-            Mobile = userDetails.get("mobile");
+            GlobalConstants.UserID = userDetails.get("id");
+           /// Mobile = userDetails.get("mobile");
         }
-        Log.e("UserId", UserId + " !");
+        Log.e("UserId",  GlobalConstants.UserID + " !");
 
+        UserContacts.getContactList(MainActivity.this);
         // Run a task to fetch the notifications count
         updateNotificationsBadge(mNotificationsCount);
 
@@ -181,5 +183,11 @@ Updates the count of notifications in the ActionBar.
         if (drawer != null) {
             drawer.setSelection(0, false);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 }

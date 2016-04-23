@@ -2,7 +2,6 @@ package com.example.saleem.testgithub.listAdapters;
 
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,7 @@ import android.widget.TextView;
 
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.gson.items.ContactsItems;
-import com.example.saleem.testgithub.gson.items.MyNeedsItems;
+import com.example.saleem.testgithub.gson.items.PendingItems;
 import com.example.saleem.testgithub.helper.CircularImageView;
 import com.example.saleem.testgithub.model.Tasks;
 import com.example.saleem.testgithub.utils.CircleTransform;
@@ -22,16 +21,21 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class MyNeedsListAdapter extends ArrayAdapter<MyNeedsItems.MyNeddsList> {
+public class PendingAdapter extends ArrayAdapter<PendingItems.PendingToDoList> {
     private Context context;
-    private List<MyNeedsItems.MyNeddsList> items;
+    private List<PendingItems.PendingToDoList> items;
 
-
-    public MyNeedsListAdapter(Context context, int textViewResourceId,
-                              List<MyNeedsItems.MyNeddsList> items) {
+    public PendingAdapter(Context context, int textViewResourceId,
+                          List<PendingItems.PendingToDoList> items) {
         super(context, textViewResourceId, items);
         this.context = context;
         this.items = items;
+    }
+
+    public class viewHolder {
+        ImageView priority_photo, thumbNail;
+        TextView name, taskSubject;
+
     }
 
     @Override
@@ -40,7 +44,7 @@ public class MyNeedsListAdapter extends ArrayAdapter<MyNeedsItems.MyNeddsList> {
     }
 
     @Override
-    public MyNeedsItems.MyNeddsList getItem(int position) {
+    public PendingItems.PendingToDoList getItem(int position) {
         return items.get(position);
     }
 
@@ -49,32 +53,27 @@ public class MyNeedsListAdapter extends ArrayAdapter<MyNeedsItems.MyNeddsList> {
         return position;
     }
 
-    public void restart(List<MyNeedsItems.MyNeddsList> items) {
+    public void restart(List<PendingItems.PendingToDoList> items) {
         this.items = items;
         notifyDataSetChanged();
     }
 
-
-    public class viewHolder {
-        ImageView thumbNail;
-        TextView name, taskSubject, status;
-
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         viewHolder holder = null;
+
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = vi.inflate(R.layout.my_needs_list, null);
+            convertView = vi.inflate(R.layout.to_dos_list, null);
 
             holder = new viewHolder();
             holder.thumbNail = (ImageView) convertView
-                    .findViewById(R.id.receiverThumbnail);
-            holder.name = (TextView) convertView.findViewById(R.id.receiver_name);
-            holder.taskSubject = (TextView) convertView.findViewById(R.id.myNeed_title);
-            holder.status = (TextView) convertView.findViewById(R.id.task_status);
+                    .findViewById(R.id.senderThumbnail);
+            holder.name = (TextView) convertView.findViewById(R.id.sender_name);
+            holder.taskSubject = (TextView) convertView.findViewById(R.id.toDo_title);
+            holder.priority_photo = (ImageView) convertView.findViewById(R.id.priority_photo);
 
             convertView.setTag(holder);
         } else {
@@ -82,6 +81,7 @@ public class MyNeedsListAdapter extends ArrayAdapter<MyNeedsItems.MyNeddsList> {
         }
 
 
+        //thumbNail.setImageUrl(t.getThumbnailUrl(), imageLoader);
         Picasso.with(context).load(items.get(position).getImageUrl()).placeholder(R.drawable.default_profile).error(R.drawable.default_profile).fit().transform(new CircleTransform()).into(holder.thumbNail);
 
         // task owner name
@@ -90,15 +90,23 @@ public class MyNeedsListAdapter extends ArrayAdapter<MyNeedsItems.MyNeddsList> {
         // task title
         holder.taskSubject.setText(items.get(position).getTitle()+"");
 
-        // task status
+        // priority label
 
-        holder.status.setText(items.get(position).getStatus()+"");
+        switch (items.get(position).getPriorityId()) {
+            case 0:
+                holder.priority_photo.setImageResource(R.drawable.low);
+                break;
+            case 1:
+                holder.priority_photo.setImageResource(R.drawable.mid);
+                break;
+            case 2:
+                holder.priority_photo.setImageResource(R.drawable.high);
+                break;
+            case 3:
+                holder.priority_photo.setImageResource(R.drawable.critical);
 
-        if (items.get(position).getStatus().equals("Not yet")) {
-            holder.status.setTextColor(Color.rgb(244, 47, 47));
-        } else {
-            holder.status.setTextColor(Color.rgb(76, 175, 80));
         }
+
 
         return convertView;
     }

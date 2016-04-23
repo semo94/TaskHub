@@ -1,149 +1,148 @@
 package com.example.saleem.testgithub.fragments;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.example.saleem.testgithub.R;
-import com.example.saleem.testgithub.app.VolleySkeleton;
+import com.example.saleem.testgithub.app.Config;
+import com.example.saleem.testgithub.database.ApiHelper;
+import com.example.saleem.testgithub.database.DataBaseAble;
+import com.example.saleem.testgithub.gcm.connection.HttpConnect;
+import com.example.saleem.testgithub.gson.items.MyNeedsItems;
 import com.example.saleem.testgithub.listAdapters.MyNeedsListAdapter;
-import com.example.saleem.testgithub.model.Tasks;
+import com.example.saleem.testgithub.utils.GlobalConstants;
+import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+
+import cz.msebera.android.httpclient.Header;
 
 
-public class MyNeeds extends Fragment {
+public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayout.OnRefreshListener {
 
-    // Log tag
-
-
-    // Tasks json url
-    private static final String url = "http://www.taskhub.tk/semo94/TaskHub/JSON/myneeds.json";
-    private ProgressDialog pDialog;
-    private List<Tasks> needsList = new ArrayList<Tasks>();
+    private ApiHelper apiHelper;
+    private Type listType;
+    private MyNeedsItems items;
+    private GetResolver getResolver = new GetResolver();
     private ListView listView;
-    private TextView noNeeds;
     private MyNeedsListAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
+    private Activity activity;
 
-
-    public MyNeeds() {
-        // Required empty public constructor
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_my_needs, container, false);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initUI(view);
+
+        swipeContainer.setRefreshing(true);
+        GlobalConstants.db.GetCache(Config.Get_MyNeedsList, 0, this, apiHelper.App, apiHelper.Cache);
+
+        HttpConnect.getData(Config.Get_MyNeedsList, getResolver);
+    }
+
+
+    private void initUI(View view) {
+        this.apiHelper = new ApiHelper(activity);
+
+        listType = new TypeToken<MyNeedsItems>() {
+        }.getType();
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        listView = (ListView) view.findViewById(R.id.myNeeds_list);
+        listView.setVisibility(View.INVISIBLE);
+        swipeContainer.setOnRefreshListener(this);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        FrameLayout MyNeedsLayout = (FrameLayout) inflater.inflate(R.layout.fragment_my_needs, container, false);
-        swipeContainer = (SwipeRefreshLayout) MyNeedsLayout.findViewById(R.id.swipeContainer);
-        noNeeds = (TextView) MyNeedsLayout.findViewById(R.id.no_needs);
-        listView = (ListView) MyNeedsLayout.findViewById(R.id.myNeeds_list);
-
-
-
-
-        fetchMyNeeds();
-
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
-                fetchMyNeeds();
-                swipeContainer.setRefreshing(false);
-
-            }
-        });
-
-        // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(R.color.colorAccent);
-
-
-
-        return MyNeedsLayout;
+    public void onRefresh() {
+        HttpConnect.getData(Config.Get_MyNeedsList, getResolver);
     }
 
-    public void fetchMyNeeds () {
-
-        // Creating volley request obj
-        JsonArrayRequest myNeedReq = new JsonArrayRequest(url,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-
-
-                        needsList.clear();
-
-                        // Parsing json
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-
-                                JSONObject obj = response.getJSONObject(i);
-                                Tasks task = new Tasks();
-                                task.setUserName(obj.getString("name"));
-                                task.setTaskTitle(obj.getString("title"));
-                                task.setThumbnailUrl(obj.getString("image"));
-                                task.setStatus(obj.getString("status"));
-
-                                // adding task to tasks array
-                                needsList.add(task);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-                        if (needsList.size()!=0)
-                        {
-                            noNeeds.setVisibility(View.GONE);
-                            adapter = new MyNeedsListAdapter(getActivity(), needsList);
-                            listView.setAdapter(adapter);
-
-                        }
-
-                        else
-                            noNeeds.setVisibility(View.VISIBLE);
-
-                        // notifying list adapter about data changes
-                        // so that it renders the list view with updated data
-                        adapter.notifyDataSetChanged();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        // Adding request to request queue
-        VolleySkeleton.getInstance().addToRequestQueue(myNeedReq);
-
+    class GetResolver extends JsonHttpResponseHandler {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            super.onSuccess(statusCode, headers, response);
+            Log.e("My needs", response.toString() + " My needs response");
+            swipeContainer.setRefreshing(false);
+            items = (MyNeedsItems) GlobalConstants.gson.fromJson(response.toString(), listType);
+            setAdapterList();
+            GlobalConstants.db.SetCache(Config.Get_MyNeedsList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
+        }
 
     }
 
+    private void setAdapterList() {
+        if (adapter == null) {
+            adapter = new MyNeedsListAdapter(activity,
+                    R.layout.my_needs_list, items.getMyNeddsList());
+            listView.setVisibility(View.VISIBLE);
+            listView.setAdapter(adapter);
+            YoYo.with(Techniques.SlideInUp).playOn(listView);
+        } else {
+            adapter.restart(items.getMyNeddsList());
+        }
+    }
 
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void SetApp_db(String Key, int tag) {
+
+    }
+
+    @Override
+    public void SetCache_db(String Key, int tag) {
+
+    }
+
+    @Override
+    public void GetApp_db(String Key, String Value, int tag) {
+
+    }
+
+    @Override
+    public void GetCache_db(String Key, String Value, int tag) {
+        if (Value != null) {
+            items = (MyNeedsItems) GlobalConstants.gson.fromJson(Value, listType);
+            setAdapterList();
+        }
+    }
 }

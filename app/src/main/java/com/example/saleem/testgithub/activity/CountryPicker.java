@@ -38,6 +38,7 @@ public class CountryPicker extends AppCompatActivity implements Comparator<Count
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.country_picker_layout);
 
 
@@ -116,5 +117,10 @@ public class CountryPicker extends AppCompatActivity implements Comparator<Count
         searchView.setOnQueryTextListener(textChangeListener);
         return super.onCreateOptionsMenu(menu);
 
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 }

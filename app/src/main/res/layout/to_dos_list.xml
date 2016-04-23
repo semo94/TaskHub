@@ -8,8 +8,7 @@
 
 
     <!-- Thumbnail Image -->
-    <com.example.saleem.testgithub.helper.CircularImageView
-
+    <ImageView
         android:id="@+id/senderThumbnail"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -17,7 +16,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        tools:ignore="ContentDescription" />
+        />
 
     <!-- Task owner name -->
     <TextView

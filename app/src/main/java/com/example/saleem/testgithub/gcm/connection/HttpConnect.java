@@ -14,68 +14,22 @@ public class HttpConnect {
 
     public static AsyncHttpClient client = new AsyncHttpClient();
 
-//    public static void addHeaders(ConnectionType connectionType) {
-//        client.setTimeout(10000);
-//        client.removeAllHeaders();
-//        switch (connectionType) {
-//
-//            case TempSessionToken:
-//
-//                if (UIConstanst.TempSessionToken != null) {
-//                    client.addHeader("TempSessionToken", String.valueOf(UIConstanst.TempSessionToken));
-//                } else if (UIConstanst.SessionToken != null) {
-//                    client.addHeader("SessionToken", String.valueOf(UIConstanst.SessionToken));
-//                }
-//
-//                break;
-//
-//            case SessionToken:
-//                if (UIConstanst.SessionToken != null) {
-//                    client.addHeader("SessionToken", String.valueOf(UIConstanst.SessionToken));
-//                }
-//
-//                break;
-//
-//        }
-//
-//
-//        if (UIConstanst.UserLanguage != null) {
-//            if (UIConstanst.UserLanguage.equals("ar")) {
-//                client.addHeader("UserLanguage", "1");
-//            } else if (UIConstanst.UserLanguage.equals("en")) {
-//                client.addHeader("UserLanguage", "2");
-//            }
-//        }
-//
-//        client.addHeader("UserDevicePlatform", "2");
-//
-//
-//    }
 
     //Get
-    public static void getData(String url, ConnectionType connectionType, AsyncHttpResponseHandler responseHandler) {
-        //addHeaders(connectionType);
-        client.get(getAbsoluteUrl(url), responseHandler);
+    public static void getData(String url, AsyncHttpResponseHandler responseHandler) {
+        client.addHeader("UserId", GlobalConstants.UserID);
+        client.get(url, responseHandler);
     }
 
     //Put
-    public static void putData(String url, StringEntity entity, Context context, ConnectionType connectionType, AsyncHttpResponseHandler responseHandler) {
-       // addHeaders(connectionType);
-        client.put(context, getAbsoluteUrl(url), entity, "application/json", responseHandler);
+    public static void putData(String url, StringEntity entity, Context context, AsyncHttpResponseHandler responseHandler) {
+        client.addHeader("UserId", GlobalConstants.UserID);        client.put(context, url, entity, "application/json", responseHandler);
     }
 
     //Post
-    public static void postData(String url, StringEntity entity, Context context, ConnectionType connectionType, AsyncHttpResponseHandler responseHandler) {
-
-        //addHeaders(connectionType);
-        client.post(context, getAbsoluteUrl(url), entity, "application/json", responseHandler);
+    public static void postData(String url, StringEntity entity, Context context, AsyncHttpResponseHandler responseHandler) {
+        client.addHeader("UserId", GlobalConstants.UserID);
+        client.post(context, url, entity, "application/json", responseHandler);
     }
 
-    private static String getAbsoluteUrl(String relativeUrl) {
-        return GlobalConstants.serverURI + relativeUrl;
-    }
-
-    public enum ConnectionType {
-        SessionToken, TempSessionToken, noHeader
-    }
 }

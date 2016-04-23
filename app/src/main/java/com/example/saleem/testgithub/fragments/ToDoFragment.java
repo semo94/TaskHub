@@ -1,5 +1,7 @@
 package com.example.saleem.testgithub.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,12 +12,18 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.activity.PendingActivity;
+import com.example.saleem.testgithub.activity.ToDoActivity;
+
+import java.lang.reflect.Field;
 
 
 public class ToDoFragment extends Fragment implements View.OnClickListener {
 
 
     private RelativeLayout pendingRelative, toDoRelative;
+    private Intent intent;
+    private Activity activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,12 +49,38 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toDoRelative:
-                Log.e("toDoRelative","toDoRelative");
+                intent = new Intent(activity, ToDoActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                activity.startActivity(intent);
                 break;
 
             case R.id.pendingRelative:
-                Log.e("pendingRelative","pendingRelative");
+                intent = new Intent(activity, PendingActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                activity.startActivity(intent);
                 break;
+        }
+    }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.activity = activity;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -30,6 +30,7 @@ public class ResizeImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_resize_image);
 
         cropImageView = (CropImageView) findViewById(R.id.CropImageView);
@@ -96,6 +97,12 @@ public class ResizeImageActivity extends AppCompatActivity {
 
     private boolean saveImage() {
         return PhotoManager.CreateImageFile(this,photoName,cropImageView.getCroppedImage());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 }
 

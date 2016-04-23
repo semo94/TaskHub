@@ -57,6 +57,7 @@ public class AssignTaskActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_assign_task);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -425,5 +426,9 @@ public class AssignTaskActivity extends AppCompatActivity {
         startActivityForResult(intent,RESIZE_PICTURE_REQUEST_CODE);
 
     }
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
 }
