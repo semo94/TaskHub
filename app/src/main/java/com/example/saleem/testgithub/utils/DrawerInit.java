@@ -1,7 +1,6 @@
 package com.example.saleem.testgithub.utils;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.view.GravityCompat;
@@ -46,7 +45,7 @@ public class DrawerInit {
                                 myIntent = new Intent(activity, MainActivity.class);
                                 break;
                             case 1:
-                                   myIntent = new Intent(activity, Profile.class);
+                                myIntent = new Intent(activity, Profile.class);
                                 break;
                             case 2:
                                 myIntent = new Intent(activity, AboutUs.class);

@@ -75,6 +75,8 @@ public class AboutUs extends AppCompatActivity {
 
         materialMenu = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
         materialMenu.animateIconState(MaterialMenuDrawable.IconState.BURGER);
+        materialMenu.setColor(Color.WHITE);
+        toolbar.setTitleTextColor(Color.WHITE);
         toolbar.setNavigationIcon(materialMenu);
         this.getSupportActionBar().setTitle("About Us");
         if (Build.VERSION.SDK_INT >= 21) {
@@ -82,8 +84,7 @@ public class AboutUs extends AppCompatActivity {
         }
 
         drawer = new DrawerInit(drawer, 2).initDrawer(this, toolbar, materialMenu);
-        toolbar.setTitleTextColor(Color.WHITE);
-        materialMenu.setColor(Color.WHITE);
+
         animateControls();
     }
 

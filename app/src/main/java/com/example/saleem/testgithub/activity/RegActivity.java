@@ -59,7 +59,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
     private SmsReceiver smsReceiver;
     final IntentFilter smsFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
 
-    private EditText inputMobile, inputOtp,countryCodeInput;
+    private EditText inputMobile, inputOtp, countryCodeInput;
     private ProgressBar progressBar;
     private PrefManager pref;
     private TextView txtEditMobile;
@@ -67,7 +67,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
     private Spinner countrySpinner;
     private Button btnRequestSms, btnVerifyOtp;
 
-    private Map<String,Country> codeCountryMap = new HashMap<>();
+    private Map<String, Country> codeCountryMap = new HashMap<>();
     private Country currentCountry;
     private static final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
@@ -77,17 +77,17 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_reg);
 
-        viewPager                   = (ViewPager) findViewById(R.id.viewPagerVertical);
-        inputMobile                 = (EditText) findViewById(R.id.inputMobile);
-        inputOtp                    = (EditText) findViewById(R.id.inputOtp);
-        countryCodeInput            = (EditText) findViewById(R.id.countryCode);
-        btnRequestSms        = (Button) findViewById(R.id.btn_request_sms);
-        btnVerifyOtp         = (Button) findViewById(R.id.btn_verify_otp);
-        progressBar                 = (ProgressBar) findViewById(R.id.progressBar);
-        ImageButton btnEditMobile   = (ImageButton) findViewById(R.id.btn_edit_mobile);
-        txtEditMobile               = (TextView) findViewById(R.id.txt_edit_mobile);
-        layoutEditMobile            = (LinearLayout) findViewById(R.id.layout_edit_mobile);
-        countrySpinner              = (Spinner) findViewById(R.id.countrySpinner);
+        viewPager = (ViewPager) findViewById(R.id.viewPagerVertical);
+        inputMobile = (EditText) findViewById(R.id.inputMobile);
+        inputOtp = (EditText) findViewById(R.id.inputOtp);
+        countryCodeInput = (EditText) findViewById(R.id.countryCode);
+        btnRequestSms = (Button) findViewById(R.id.btn_request_sms);
+        btnVerifyOtp = (Button) findViewById(R.id.btn_verify_otp);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        ImageButton btnEditMobile = (ImageButton) findViewById(R.id.btn_edit_mobile);
+        txtEditMobile = (TextView) findViewById(R.id.txt_edit_mobile);
+        layoutEditMobile = (LinearLayout) findViewById(R.id.layout_edit_mobile);
+        countrySpinner = (Spinner) findViewById(R.id.countrySpinner);
 
         // view click listeners
         btnEditMobile.setOnClickListener(this);
@@ -111,7 +111,8 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         // if user is already logged in, take him to main activity
         if (pref.isLoggedIn()) {
             Intent intent = new Intent(RegActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }
@@ -148,7 +149,6 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         setUserCountry();
 
 
-
         //make mobile editText take the focus (cursor)
         inputMobile.setFocusableInTouchMode(true);
         inputMobile.requestFocus();
@@ -164,21 +164,18 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
 
         Phonenumber.PhoneNumber number = isValidPhoneNumber();
         assert number != null;
-        final String  E164PhoneNumber =   phoneUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
+        final String E164PhoneNumber = phoneUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(Html.fromHtml("Are you sure that \'" + "<b>" + E164PhoneNumber  +"</b>" + "\' is your mobile number ?"))
+        builder.setMessage(Html.fromHtml("Are you sure that \'" + "<b>" + E164PhoneNumber + "</b>" + "\' is your mobile number ?"))
                 .setTitle("Verify number:")
                 .setCancelable(true)
                 .setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener()
-                        {
+                        new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog,
-                                                int id)
-                            {
+                                                int id) {
                                 btnRequestSms.setClickable(false);
-
 
 
                                 // request for sms
@@ -194,12 +191,10 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                             }
                         })
                 .setNegativeButton("Edit",
-                        new DialogInterface.OnClickListener()
-                        {
+                        new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog,
-                                                int id)
-                            {
+                                                int id) {
                                 dialog.cancel();
                             }
                         });
@@ -215,8 +210,8 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
             ArrayList<Country> countries = Country.countriesList(getApplicationContext());
 
 
-            for (Country country:countries){
-                codeCountryMap.put(country.getCode(),country);
+            for (Country country : countries) {
+                codeCountryMap.put(country.getCode(), country);
             }
 
         } catch (XmlPullParserException | IOException e) {
@@ -259,7 +254,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
 
         } else {
             Toast.makeText(getApplicationContext(), "Please enter valid mobile number", Toast.LENGTH_SHORT).show();
-          btnRequestSms.setClickable(true);
+            btnRequestSms.setClickable(true);
 
         }
     }
@@ -278,7 +273,7 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                 Log.d(TAG, response);
 
                 try {
-                   JSONObject responseObj = new JSONObject(response);
+                    JSONObject responseObj = new JSONObject(response);
 
                     // Parsing json object response
                     // response will be a json object
@@ -298,7 +293,6 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
 
-
                     } else {
                         Toast.makeText(getApplicationContext(),
                                 "Error: " + message,
@@ -315,9 +309,9 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
                             "Error: " + e.getMessage(),
                             Toast.LENGTH_LONG).show();
                     Log.e(TAG, "catch e");
-                   btnRequestSms.setClickable(true);
+                    btnRequestSms.setClickable(true);
 
-                             progressBar.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
                 }
 
             }
@@ -370,34 +364,30 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
     /**
      * Regex to validate the mobile number
      * mobile number should be of 10 digits length
-     *
      */
     private Phonenumber.PhoneNumber isValidPhoneNumber() {
-        try
-        {
-            String mobile   = inputMobile.getText().toString().trim();
-            String code     = countryCodeInput.getText().toString().trim();
+        try {
+            String mobile = inputMobile.getText().toString().trim();
+            String code = countryCodeInput.getText().toString().trim();
             Phonenumber.PhoneNumber number = phoneUtil.parse(mobile, codeCountryMap.get(code).getIso().toUpperCase());
             phoneUtil.format(number, PhoneNumberUtil.PhoneNumberFormat.E164);
-            if (phoneUtil.isValidNumberForRegion(number, currentCountry.getIso().toUpperCase())){
+            if (phoneUtil.isValidNumberForRegion(number, currentCountry.getIso().toUpperCase())) {
                 return number;
-            }else {
+            } else {
                 return null;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
 
-
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            Log.d(TAG,"OnTouchSpinner");
-            startActivityForResult(new Intent(this, CountryPicker.class),CountryPicker.PICK_COUNTRY_REQ);
+            Log.d(TAG, "OnTouchSpinner");
+            startActivityForResult(new Intent(this, CountryPicker.class), CountryPicker.PICK_COUNTRY_REQ);
         }
         return false;
     }
@@ -433,8 +423,8 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CountryPicker.PICK_COUNTRY_REQ){
-            if (resultCode == RESULT_OK){
+        if (requestCode == CountryPicker.PICK_COUNTRY_REQ) {
+            if (resultCode == RESULT_OK) {
                 if (data != null) {
                     Bundle bundle = data.getExtras();
                     currentCountry = bundle.getParcelable(CountryPicker.SELECTED_COUNTRY);
@@ -455,11 +445,11 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
 
     private void setUserCountry() {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        String countryISO =  telephonyManager.getSimCountryIso().toUpperCase();
-        Locale local = new Locale("",countryISO);
+        String countryISO = telephonyManager.getSimCountryIso().toUpperCase();
+        Locale local = new Locale("", countryISO);
         String countryNameString = local.getDisplayCountry();
         String countryCode = String.valueOf(phoneUtil.getCountryCodeForRegion(countryISO.toUpperCase()));
-        currentCountry = new Country(countryISO,countryNameString,countryCode);
+        currentCountry = new Country(countryISO, countryNameString, countryCode);
         displayCountryInfo(currentCountry);
     }
 
@@ -478,11 +468,11 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         public void afterTextChanged(Editable s) {
             String code = s.toString();
             Country country = codeCountryMap.get(code);
-            if (country != null){
+            if (country != null) {
                 String countryName = country.getName();
                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.country_spinner_item, new String[]{countryName}); //selected item will look like a spinner set from XML
                 countrySpinner.setAdapter(spinnerArrayAdapter);
-            }else{
+            } else {
                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.country_spinner_item, new String[]{"Invalid Code"}); //selected item will look like a spinner set from XML
                 countrySpinner.setAdapter(spinnerArrayAdapter);
             }
