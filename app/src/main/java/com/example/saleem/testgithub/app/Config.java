@@ -11,7 +11,7 @@ public class Config {
     public static final String Get_PendingList = "http://www.taskhub.tk/semo94/TaskHub/API/PendingToDoList.php";
     public static final String Get_UnderProgressList = "http://www.taskhub.tk/semo94/TaskHub/API/UnderProgressToDoList.php";
     public static final String Get_MyNeedsList = "http://www.taskhub.tk/semo94/TaskHub/API/myNeedsList.php";
-
+    public static final String Get_DeactivateAccount = "http://www.taskhub.tk/semo94/TaskHub/API/DeactivateAccount.php";
 
     // SMS provider identification
     // It should match with your SMS gateway origin

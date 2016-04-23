@@ -69,7 +69,8 @@ public class HttpService extends IntentService {
                         pref.createLogin(mobile, id);
 
                         Intent intent = new Intent(HttpService.this, UserInfoActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 

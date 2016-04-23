@@ -12,6 +12,7 @@ import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.activity.AboutUs;
 import com.example.saleem.testgithub.activity.MainActivity;
 import com.example.saleem.testgithub.activity.Profile;
+import com.example.saleem.testgithub.activity.Settings;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -49,6 +50,10 @@ public class DrawerInit {
                                 break;
                             case 2:
                                 myIntent = new Intent(activity, AboutUs.class);
+                                break;
+
+                            case 3:
+                                myIntent = new Intent(activity, Settings.class);
                                 break;
 
                         }

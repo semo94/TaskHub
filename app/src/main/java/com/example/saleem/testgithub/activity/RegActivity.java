@@ -109,13 +109,13 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
 
         // Checking for user session
         // if user is already logged in, take him to main activity
-        if (pref.isLoggedIn()) {
-            Intent intent = new Intent(RegActivity.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
-        }
+//        if (pref.isLoggedIn()) {
+//            Intent intent = new Intent(RegActivity.this, MainActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//            finish();
+//        }
 
         ViewPagerAdapter adapter = new ViewPagerAdapter();
         viewPager.setAdapter(adapter);
@@ -486,4 +486,8 @@ public class RegActivity extends AppCompatActivity implements View.OnClickListen
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

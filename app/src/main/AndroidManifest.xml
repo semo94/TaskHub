@@ -14,10 +14,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:launchMode="singleTop"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.Splash"
+            android:name="com.example.saleem.testgithub.activity.Splash"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -29,7 +29,7 @@
 
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.example.saleem.testgithub.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -42,41 +42,43 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.RegActivity"
-            android:label="@string/reg_label">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
 
-        <activity android:name=".activity.UserInfoActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-            </intent-filter>
-        </activity>
-        <activity android:name=".activity.ResizeImageActivity" />
-        <activity android:name=".activity.SetupUI" />
-        <activity android:name=".activity.CountryPicker" />
-        <activity android:name=".activity.FullScreenImageViewerActivity" />
 
         <activity
-            android:name=".activity.AssignTaskActivity"
-            android:label="@string/title_activity_assign_task"
-            android:parentActivityName=".activity.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.saleem.testgithub.activity.MainActivity" />
-        </activity>
-
-        <activity
-            android:name=".activity.Profile"
+            android:name="com.example.saleem.testgithub.activity.RegActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:supportsRtl="true"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.example.saleem.testgithub.activity.UserInfoActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+            </intent-filter>
+        </activity>
+
+
+        <activity
+            android:name="com.example.saleem.testgithub.activity.ResizeImageActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.saleem.testgithub.activity.SetupUI"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -86,10 +88,67 @@
         </activity>
 
         <activity
-        android:name=".activity.AboutUs"
+            android:name="com.example.saleem.testgithub.activity.CountryPicker"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.example.saleem.testgithub.activity.FullScreenImageViewerActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.saleem.testgithub.activity.AssignTaskActivity"
+            android:label="@string/title_activity_assign_task"
+            android:parentActivityName="com.example.saleem.testgithub.activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.saleem.testgithub.activity.MainActivity" />
+        </activity>
+
+        <activity
+            android:name="com.example.saleem.testgithub.activity.Profile"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.example.saleem.testgithub.activity.Settings"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+        android:name="com.example.saleem.testgithub.activity.AboutUs"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
-        android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <intent-filter>
             <action android:name="android.intent.action.VIEW" />
@@ -99,10 +158,9 @@
     </activity>
 
         <activity
-            android:name=".activity.PendingActivity"
+            android:name="com.example.saleem.testgithub.activity.PendingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:supportsRtl="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -112,10 +170,9 @@
         </activity>
 
         <activity
-            android:name=".activity.ToDoActivity"
+            android:name="com.example.saleem.testgithub.activity.ToDoActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:supportsRtl="true"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

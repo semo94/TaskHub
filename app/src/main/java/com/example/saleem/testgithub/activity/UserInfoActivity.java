@@ -95,6 +95,8 @@ public class UserInfoActivity extends SetupUI {
 
         Toast.makeText(getApplicationContext(), "Welcome to TaskHub!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(UserInfoActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

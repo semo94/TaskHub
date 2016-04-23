@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             GlobalConstants.UserID = userDetails.get("id");
            /// Mobile = userDetails.get("mobile");
         }
-        Log.e("UserId",  GlobalConstants.UserID + " !");
+//        Log.e("UserId",  GlobalConstants.UserID + " !");
 
 
         if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP_MR1){
