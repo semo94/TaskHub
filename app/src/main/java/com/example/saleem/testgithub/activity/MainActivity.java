@@ -10,12 +10,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -39,16 +37,13 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 0x11;
+    String[] permissions = {"android.permission.READ_CONTACTS"};
     private int mNotificationsCount = 2;
     private PrefManager pref;
-
     private MaterialMenuDrawable materialMenu;
     private Toolbar toolbar;
     private Drawer drawer;
-
-    private static final int REQUEST_CODE = 0x11;
-
-    String[] permissions = {"android.permission.READ_CONTACTS"};
      // without sdk version check
 
     @Override
@@ -154,6 +149,23 @@ public class MainActivity extends AppCompatActivity {
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
 
+
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                onTyping(newText);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
+
+
+
         // Get the notifications MenuItem and
         // its LayerDrawable (layer-list)
         MenuItem item = menu.findItem(R.id.notifications);
@@ -216,4 +228,19 @@ Updates the count of notifications in the ActionBar.
         super.onPause();
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
+
+
+    void onTyping(String textTyped) {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        assert viewPager != null;
+        int index = viewPager.getCurrentItem();
+        ViewPagerAdapter adapter = ((ViewPagerAdapter) viewPager.getAdapter());
+        SearchInterface searchInterface = (SearchInterface) adapter.getItem(index);
+        searchInterface.onTyping(textTyped);
+    }
+
+    public interface SearchInterface {
+        void onTyping(String textTyped);
+    }
 }
+
