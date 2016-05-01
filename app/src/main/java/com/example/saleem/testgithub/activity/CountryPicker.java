@@ -9,13 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
+import android.widget.SearchView;
 
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.helper.Country;
@@ -35,6 +34,18 @@ public class CountryPicker extends AppCompatActivity implements Comparator<Count
     private ArrayList<Country> searchedCounters ;
 
     private CountryListAdapter countryListAdapter;
+    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Intent result = new Intent();
+            result.putExtra(SELECTED_COUNTRY, (Country) adapterView.getItemAtPosition(i));
+            setResult(RESULT_OK, result);
+            finish();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +72,6 @@ public class CountryPicker extends AppCompatActivity implements Comparator<Count
         countryListView.setOnItemClickListener(onItemClickListener);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -76,18 +86,6 @@ public class CountryPicker extends AppCompatActivity implements Comparator<Count
     public int compare(Country country1, Country country2) {
         return country1.getName().compareTo(country2.getName());
     }
-
-    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-
-
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            Intent result = new Intent();
-            result.putExtra(SELECTED_COUNTRY,(Country) adapterView.getItemAtPosition(i));
-            setResult(RESULT_OK, result);
-            finish();
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

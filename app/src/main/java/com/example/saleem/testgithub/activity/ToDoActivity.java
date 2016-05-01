@@ -1,5 +1,7 @@
 package com.example.saleem.testgithub.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,8 +9,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.daimajia.androidanimations.library.Techniques;
@@ -28,6 +32,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -40,6 +45,7 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     private GetResolver getResolver = new GetResolver();
     private Type listType;
     private PendingItems items;
+    private PendingItems searchedItems;
     private PendingAdapter adapter;
     private ApiHelper apiHelper;
     private SwipeRefreshLayout swipeContainer;
@@ -101,32 +107,18 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
         super.onBackPressed();
     }
 
-    class GetResolver extends JsonHttpResponseHandler {
-        @Override
-        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            super.onSuccess(statusCode, headers, response);
-            Log.e("ToDO", response.toString() + " ToDO response");
-            swipeContainer.setRefreshing(false);
-            items = (PendingItems) GlobalConstants.gson.fromJson(response.toString(), listType);
-            setAdapterList();
-            GlobalConstants.db.SetCache(Config.Get_UnderProgressList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
-        }
-
-    }
-
     private void setAdapterList() {
         if (adapter == null) {
             adapter = new PendingAdapter(ToDoActivity.this,
-                    R.layout.to_dos_list, items.getPendingToDoList());
+                    R.layout.to_dos_list, searchedItems.getPendingToDoList());
             listView.setVisibility(View.VISIBLE);
             listView.setAdapter(adapter);
             YoYo.with(Techniques.SlideInUp).playOn(listView);
         } else {
             listView.setVisibility(View.VISIBLE);
-            adapter.restart(items.getPendingToDoList());
+            adapter.restart(searchedItems.getPendingToDoList());
         }
     }
-
 
     @Override
     public void SetApp_db(String Key, int tag) {
@@ -146,7 +138,8 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     @Override
     public void GetCache_db(String Key, String Value, int tag) {
         if (Value != null) {
-            items = (PendingItems) GlobalConstants.gson.fromJson(Value, listType);
+            items = GlobalConstants.gson.fromJson(Value, listType);
+            searchedItems = GlobalConstants.gson.fromJson(Value, listType);
             setAdapterList();
         }
     }
@@ -156,10 +149,58 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
         HttpConnect.getData(Config.Get_UnderProgressList, getResolver);
     }
 
-
     @Override
     protected void onPause() {
         super.onPause();
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.country_picker_menu, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.country_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchedItems.getPendingToDoList().clear();
+                ArrayList<PendingItems.PendingToDoList> pendingToDoLists = new ArrayList<>();
+                for (PendingItems.PendingToDoList pendingToDoList : items.getPendingToDoList()) {
+                    try {
+                        if (pendingToDoList.getUserName().toLowerCase().contains(newText.toLowerCase())) {
+                            pendingToDoLists.add(pendingToDoList);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                searchedItems.setPendingToDoList(pendingToDoLists);
+                setAdapterList();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
+    class GetResolver extends JsonHttpResponseHandler {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            super.onSuccess(statusCode, headers, response);
+            Log.e("ToDO", response.toString() + " ToDO response");
+            swipeContainer.setRefreshing(false);
+            items = GlobalConstants.gson.fromJson(response.toString(), listType);
+            searchedItems = GlobalConstants.gson.fromJson(response.toString(), listType);
+            setAdapterList();
+            GlobalConstants.db.SetCache(Config.Get_UnderProgressList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
+        }
+
     }
 }
