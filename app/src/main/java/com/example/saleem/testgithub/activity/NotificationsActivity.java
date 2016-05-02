@@ -20,16 +20,15 @@ import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.database.ApiHelper;
 import com.example.saleem.testgithub.database.DataBaseAble;
 import com.example.saleem.testgithub.gcm.connection.HttpConnect;
+import com.example.saleem.testgithub.gson.items.NotificationsItems;
 import com.example.saleem.testgithub.gson.items.PendingItems;
-import com.example.saleem.testgithub.gson.items.UnderProgressItems;
+import com.example.saleem.testgithub.listAdapters.NotificationAdapter;
 import com.example.saleem.testgithub.listAdapters.PendingAdapter;
-import com.example.saleem.testgithub.listAdapters.UnderProgressAdapter;
 import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.example.saleem.testgithub.utils.MyExceptionHandler;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -37,14 +36,15 @@ import java.lang.reflect.Type;
 import cz.msebera.android.httpclient.Header;
 
 
-public class ToDoActivity extends AppCompatActivity implements DataBaseAble, SwipeRefreshLayout.OnRefreshListener {
+public class NotificationsActivity extends AppCompatActivity implements DataBaseAble, SwipeRefreshLayout.OnRefreshListener {
 
     private Toolbar toolbar;
     private MaterialMenuDrawable materialMenu;
     private ListView listView;
+    private GetResolver getResolver = new GetResolver();
     private Type listType;
-    private UnderProgressItems items;
-    private UnderProgressAdapter adapter;
+    private NotificationsItems items;
+    private NotificationAdapter adapter;
     private ApiHelper apiHelper;
     private SwipeRefreshLayout swipeContainer;
 
@@ -53,49 +53,21 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
         super.onCreate(savedInstanceState);
 
         this.initUI();
-
         swipeContainer.setRefreshing(true);
-        listType = new TypeToken<UnderProgressItems>() {
+        listType = new TypeToken<NotificationsItems>() {
         }.getType();
-        this.apiHelper = new ApiHelper(ToDoActivity.this);
-        GlobalConstants.db.GetCache(Config.Get_UnderProgressList, 0, this, apiHelper.App, apiHelper.Cache);
-        HttpConnect.getData(Config.Get_UnderProgressList, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.e("ToDO", response.toString() + " ToDO response");
-                swipeContainer.setRefreshing(false);
-                items = (UnderProgressItems) GlobalConstants.gson.fromJson(response.toString(), listType);
-                setAdapterList();
-                GlobalConstants.db.SetCache(Config.Get_UnderProgressList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-
-                Log.e("onFailure", responseString);
-            }
-        });
+        this.apiHelper = new ApiHelper(NotificationsActivity.this);
+        GlobalConstants.db.GetCache(Config.Get_Notifications, 0, this, apiHelper.App, apiHelper.Cache);
+        HttpConnect.getData(Config.Get_Notifications, getResolver);
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent myIntent = new Intent(ToDoActivity.this, UnderProgressTaskDetails.class);
-                myIntent.putExtra("TaskId", items.getProgressToDo().get(position).getId());
-                myIntent.putExtra("UserName", items.getProgressToDo().get(position).getUserName());
-                myIntent.putExtra("UserPhoto", items.getProgressToDo().get(position).getImageUrl());
-                startActivity(myIntent);
-            }
-        });
     }
 
 
     private void initUI() {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this, ToDoActivity.class, "ToDoActivity"));
-        setContentView(R.layout.to_do_activity);
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this, NotificationsActivity.class, "NotificationsActivity"));
+        setContentView(R.layout.pending_activity);
         initControls();
 
 
@@ -104,7 +76,7 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
         materialMenu = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
         materialMenu.animateIconState(MaterialMenuDrawable.IconState.BURGER);
         toolbar.setNavigationIcon(materialMenu);
-        this.getSupportActionBar().setTitle("To Do Tasks");
+        this.getSupportActionBar().setTitle("Notifications");
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorAccent));
         }
@@ -123,8 +95,8 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
 
     private void initControls() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        listView = (ListView) findViewById(R.id.to_do_list);
-        listView.setVisibility(View.VISIBLE);
+        listView = (ListView) findViewById(R.id.pending_list);
+        listView.setVisibility(View.INVISIBLE);
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(this);
     }
@@ -134,16 +106,29 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
         super.onBackPressed();
     }
 
+    class GetResolver extends JsonHttpResponseHandler {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            super.onSuccess(statusCode, headers, response);
+            Log.e("Pending", response.toString() + " Pending response");
+            swipeContainer.setRefreshing(false);
+            items = (NotificationsItems) GlobalConstants.gson.fromJson(response.toString(), listType);
+            setAdapterList();
+            GlobalConstants.db.SetCache(Config.Get_Notifications, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
+        }
+
+    }
+
     private void setAdapterList() {
         if (adapter == null) {
-            adapter = new UnderProgressAdapter(ToDoActivity.this,
-                    R.layout.to_dos_list, items.getProgressToDo());
+            adapter = new NotificationAdapter(NotificationsActivity.this,
+                    R.layout.contacts_items, items.getAllNotifications());
             listView.setVisibility(View.VISIBLE);
             listView.setAdapter(adapter);
             YoYo.with(Techniques.SlideInUp).playOn(listView);
         } else {
             listView.setVisibility(View.VISIBLE);
-            adapter.restart(items.getProgressToDo());
+            adapter.restart(items.getAllNotifications());
         }
     }
 
@@ -166,16 +151,15 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     @Override
     public void GetCache_db(String Key, String Value, int tag) {
         if (Value != null) {
-            items = (UnderProgressItems) GlobalConstants.gson.fromJson(Value, listType);
+            items = (NotificationsItems) GlobalConstants.gson.fromJson(Value, listType);
             setAdapterList();
         }
     }
 
     @Override
     public void onRefresh() {
-        //HttpConnect.getData(Config.Get_UnderProgressList, getResolver);
+        HttpConnect.getData(Config.Get_Notifications, getResolver);
     }
-
 
     @Override
     protected void onPause() {
@@ -183,3 +167,4 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 }
+

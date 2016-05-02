@@ -2,6 +2,7 @@ package com.example.saleem.testgithub.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,8 +17,10 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.activity.AssignTaskActivity;
+import com.example.saleem.testgithub.activity.BlockList;
 import com.example.saleem.testgithub.activity.UserInfoActivity;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.database.ApiHelper;
@@ -37,6 +40,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 
 public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayout.OnRefreshListener {
@@ -51,6 +57,8 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
     private FloatingActionButton fab;
     private SwipeRefreshLayout swipeContainer;
 
+    int intPosition;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_contacts, container, false);
@@ -64,6 +72,50 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
         GlobalConstants.db.GetCache(Config.GetMyContactsList, 0, this, apiHelper.App, apiHelper.Cache);
 
         HttpConnect.getData(Config.GetMyContactsList, getResolver);
+
+        lstContacts.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                                   @Override
+                                                   public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                                       intPosition = position;
+                                                       new MaterialDialog.Builder(activity)
+                                                               .title("Block List")
+                                                               .content("Are you sure you want to block this user?")
+                                                               .contentColor(Color.parseColor("#2a2a2a"))
+                                                               .titleColor(Color.parseColor("#2a2a2a"))
+                                                               .positiveColor(Color.parseColor("#2a2a2a"))
+                                                               .negativeColor(Color.parseColor("#2a2a2a"))
+                                                               .positiveText("Yes")
+                                                               .negativeText("No")
+                                                               .callback(new MaterialDialog.ButtonCallback() {
+                                                                   @Override
+                                                                   public void onPositive(MaterialDialog dialog) {
+
+                                                                       JSONObject jsonParams = new JSONObject();
+                                                                       try {
+                                                                           jsonParams.put("UserID", items.getMyContactsList().get(intPosition).getId() + "");
+
+                                                                       } catch (JSONException e) {
+
+                                                                       }
+                                                                       StringEntity entity = new StringEntity(jsonParams.toString(), "UTF-8");
+                                                                       entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+
+                                                                       HttpConnect.postData(Config.Post_BlockUser, entity, activity, new JsonHttpResponseHandler() {
+                                                                           @Override
+                                                                           public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                                                               super.onSuccess(statusCode, headers, response);
+                                                                               HttpConnect.getData(Config.GetMyContactsList, getResolver);
+                                                                           }
+                                                                       });
+
+                                                                   }
+
+                                                               }).cancelable(false)
+                                                               .show();
+                                                       return false;
+                                                   }
+                                               }
+        );
     }
 
     private void initUI(View view) {

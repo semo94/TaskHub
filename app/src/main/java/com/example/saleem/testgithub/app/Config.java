@@ -10,11 +10,16 @@ public class Config {
     public static final String GetMyContactsList = "http://www.taskhub.tk/semo94/TaskHub/API/GetMyContactsList.php";
     public static final String UploadContacts = "http://www.taskhub.tk/semo94/TaskHub/API/UploadContacts.php";
     public static final String Get_PendingList = "http://www.taskhub.tk/semo94/TaskHub/API/PendingToDoList.php";
-    public static final String Get_UnderProgressList = "http://www.taskhub.tk/semo94/TaskHub/API/UnderProgressToDoList.php";
+    public static final String Get_UnderProgressList = "http://www.taskhub.tk/semo94/TaskHub/API/ProgToDoList.php";
     public static final String Get_MyNeedsList = "http://www.taskhub.tk/semo94/TaskHub/API/myNeedsList.php";
     public static final String Get_DeactivateAccount = "http://www.taskhub.tk/semo94/TaskHub/API/DeactivateAccount.php";
     public static final String Get_TaskDetails = "http://www.taskhub.tk/semo94/TaskHub/API/taskDetails.php?Taskid=";
     public static final String Get_BlockList = "http://www.taskhub.tk/semo94/TaskHub/API/GetBlockedList.php";
+    public static final String Post_UnBlockUser = "http://www.taskhub.tk/semo94/TaskHub/API/UnBlockUser.php";
+    public static final String Post_BlockUser = "http://www.taskhub.tk/semo94/TaskHub/API/BlockUser.php";
+
+
+    public static final String Get_Notifications = "http://www.taskhub.tk/semo94/TaskHub/API/Allnotf.php";
 
     // SMS provider identification
     // It should match with your SMS gateway origin

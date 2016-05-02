@@ -3,6 +3,7 @@ package com.example.saleem.testgithub.activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,24 +12,34 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
+import com.example.saleem.testgithub.Notification.Utils;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.fragments.Contacts;
 import com.example.saleem.testgithub.fragments.MyNeeds;
 import com.example.saleem.testgithub.fragments.ToDoFragment;
 import com.example.saleem.testgithub.fragments.ViewPagerAdapter;
+import com.example.saleem.testgithub.gcm.connection.HttpConnect;
+import com.example.saleem.testgithub.utils.BadgeView;
 import com.example.saleem.testgithub.utils.DrawerInit;
 import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.example.saleem.testgithub.utils.PrefManager;
 import com.example.saleem.testgithub.utils.UserContacts;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mikepenz.materialdrawer.Drawer;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private int mNotificationsCount = 2;
     private PrefManager pref;
 
     private MaterialMenuDrawable materialMenu;
@@ -39,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     String[] permissions = {"android.permission.READ_CONTACTS"};
     // without sdk version check
+
+    private ImageView notification;
+    private BadgeView badgeViewNotification;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -59,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        notification = (ImageView) findViewById(R.id.notification);
         setSupportActionBar(toolbar);
 
         materialMenu = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
@@ -100,8 +115,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Run a task to fetch the notifications count
-        updateNotificationsBadge(mNotificationsCount);
+        //updateNotificationsBadge(mNotificationsCount);
 
+
+        notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Count = 0;
+                if (badgeViewNotification != null) {
+                    badgeViewNotification.hide(true);
+                    badgeViewNotification.setVisibility(View.GONE);
+                }
+                Intent myIntent = new Intent(MainActivity.this, NotificationsActivity.class);
+                startActivity(myIntent);
+            }
+        });
     }
 
 
@@ -131,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-////    @Override
+    ////    @Override
 ////
 ////    // Inflate the menu; this adds items to the action bar if it is present.
 ////    public boolean onCreateOptionsMenu(Menu menu) {
@@ -183,18 +211,48 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //Updates the count of notifications in the ActionBar.
-    private void updateNotificationsBadge(int count) {
-        mNotificationsCount = count;
+//    private void updateNotificationsBadge(int count) {
+//        mNotificationsCount = count;
+//
+//        // force the ActionBar to relayout its MenuItems.
+//        // onCreateOptionsMenu(Menu) will be called again.
+//        invalidateOptionsMenu();
+//    }
 
-        // force the ActionBar to relayout its MenuItems.
-        // onCreateOptionsMenu(Menu) will be called again.
-        invalidateOptionsMenu();
-    }
-
+    int Count;
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        HttpConnect.getData("http://www.taskhub.tk/semo94/TaskHub/API/CountOfNotif.php", new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                try {
+                    if (response.has("NotificationsCont")) {
+                        Count = response.getInt("NotificationsCont");
+                        if (Count > 0) {
+                            badgeViewNotification = new BadgeView(MainActivity.this, notification);
+                            badgeViewNotification.setText(Count + "");
+                            badgeViewNotification.setBadgePosition(BadgeView.POSITION_TOP_LEFT);
+                            badgeViewNotification.show(true);
+                            badgeViewNotification.setVisibility(View.VISIBLE);
+                        } else {
+                            Count = 0;
+                            if (badgeViewNotification != null) {
+                                //badgeViewNotification.hide(true);
+                                badgeViewNotification.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+
+                }
+            }
+        });
 
         if (drawer != null) {
             drawer.setSelection(0, false);

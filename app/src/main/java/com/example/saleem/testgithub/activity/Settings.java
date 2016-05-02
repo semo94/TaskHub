@@ -20,6 +20,7 @@ import com.daimajia.androidanimations.library.YoYo;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.gcm.connection.HttpConnect;
+import com.example.saleem.testgithub.gson.items.BlockItems;
 import com.example.saleem.testgithub.utils.DrawerInit;
 import com.example.saleem.testgithub.utils.MyExceptionHandler;
 import com.example.saleem.testgithub.utils.PrefManager;
@@ -69,6 +70,14 @@ public class Settings extends AppCompatActivity {
 
                 });
 
+            }
+        });
+
+        otherSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(Settings.this, BlockList.class);
+                startActivity(myIntent);
             }
         });
     }
