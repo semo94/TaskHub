@@ -14,6 +14,7 @@ public class Config {
     public static final String Get_MyNeedsList = "http://www.taskhub.tk/semo94/TaskHub/API/myNeedsList.php";
     public static final String Get_DeactivateAccount = "http://www.taskhub.tk/semo94/TaskHub/API/DeactivateAccount.php";
     public static final String Get_TaskDetails = "http://www.taskhub.tk/semo94/TaskHub/API/taskDetails.php?Taskid=";
+    public static final String Get_BlockList = "http://www.taskhub.tk/semo94/TaskHub/API/GetBlockedList.php";
 
     // SMS provider identification
     // It should match with your SMS gateway origin

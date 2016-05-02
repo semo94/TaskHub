@@ -34,6 +34,8 @@ import com.example.saleem.testgithub.Gallery.CameraActivity;
 import com.example.saleem.testgithub.Gallery.GalleryActivity;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.app.Config;
+import com.example.saleem.testgithub.gcm.connection.GCMAsyncTask;
+import com.example.saleem.testgithub.gcm.connection.GCMResultsListener;
 import com.example.saleem.testgithub.gcm.connection.HttpConnect;
 import com.example.saleem.testgithub.helper.CircularImageView;
 import com.example.saleem.testgithub.utils.CircleTransform;
@@ -54,13 +56,14 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HTTP;
 
-public class UserInfoActivity extends AppCompatActivity {
+public class UserInfoActivity extends AppCompatActivity implements GCMResultsListener {
 
     private EditText inputName, inputEmail;
     private TextInputLayout inputLayoutName, inputLayoutEmail;
     private Button btnSignUp;
     private ImageView circularImageView;
     public static UserInfoActivity userInfoActivity;
+    private String GCMString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,7 @@ public class UserInfoActivity extends AppCompatActivity {
         });
         userInfoActivity = this;
 
+
     }
 
     /**
@@ -120,33 +124,10 @@ public class UserInfoActivity extends AppCompatActivity {
         if (!validateEmail()) {
             return;
         }
+        GCMAsyncTask task = new GCMAsyncTask(UserInfoActivity.this);
+        task.setOnResultsListener(UserInfoActivity.this);
+        task.execute();
 
-
-        JSONObject jsonParams = new JSONObject();
-        try {
-            jsonParams.put("UserName", inputName.getText().toString().trim());
-            jsonParams.put("UserEmail", inputEmail.getText().toString().trim());
-            jsonParams.put("GCM", "sss");
-        } catch (JSONException e) {
-
-        }
-        StringEntity entity = new StringEntity(jsonParams.toString(), "UTF-8");
-        entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-
-        HttpConnect.postData(Config.UserInfo, entity, UserInfoActivity.this, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                Log.e("Upload response", response.toString() + "  !");
-            }
-        });
-
-
-        Toast.makeText(getApplicationContext(), "Welcome to TaskHub!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(UserInfoActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
     }
 
     private boolean validateName() {
@@ -263,5 +244,36 @@ public class UserInfoActivity extends AppCompatActivity {
 
         Picasso.with(UserInfoActivity.this).load("file:" + photo).placeholder(R.drawable.default_profile).error(R.drawable.default_profile).fit().transform(new CircleTransform()).into(circularImageView);
 
+    }
+
+    @Override
+    public void onGCMResultsSucceeded(String result) {
+        GCMString = result;
+
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("UserName", inputName.getText().toString().trim());
+            jsonParams.put("UserEmail", inputEmail.getText().toString().trim());
+            jsonParams.put("GCM", GCMString);
+        } catch (JSONException e) {
+
+        }
+        StringEntity entity = new StringEntity(jsonParams.toString(), "UTF-8");
+        entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+
+        HttpConnect.postData(Config.UserInfo, entity, UserInfoActivity.this, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("Upload response", response.toString() + "  !");
+            }
+        });
+
+
+        Toast.makeText(getApplicationContext(), "Welcome to TaskHub!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(UserInfoActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

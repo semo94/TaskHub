@@ -25,6 +25,7 @@ import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.example.saleem.testgithub.utils.MyExceptionHandler;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -133,7 +134,17 @@ public class PendingTaskDetails extends AppCompatActivity {
 
             Picasso.with(PendingTaskDetails.this).load(UserPhoto).placeholder(R.drawable.default_profile).error(R.drawable.default_profile).fit().transform(new CircleTransform()).into(UserImage);
 
-            Picasso.with(PendingTaskDetails.this).load(items.getAttachedImgUrl()).fit().into(Attach);
+            Picasso.with(PendingTaskDetails.this).load(items.getAttachedImgUrl()).fit().into(Attach, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Attach.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onError() {
+                    Attach.setVisibility(View.GONE);
+                }
+            });
             UserTxt.setText(UserName);
             TaskTitle.setText(items.getTitle());
             TaskDesc.setText(items.getDescreption());

@@ -18,7 +18,7 @@ public class GCMAsyncTask extends AsyncTask<String, Integer, String> implements
     private Context context;
     private String registrationId;
     private ApiHelper apiHelper;
-    private String gcmID = "450832257776";
+    private String gcmID = "980504178442";
 
     public GCMAsyncTask(Context context) {
         this.context = context;
@@ -39,7 +39,6 @@ public class GCMAsyncTask extends AsyncTask<String, Integer, String> implements
 
             gcm.unregister();
             registrationId = gcm.register(gcmID);
-
 
             GlobalConstants.db.SetApp("registrationId", registrationId, 0,
                     GCMAsyncTask.this, apiHelper.App, apiHelper.Cache);

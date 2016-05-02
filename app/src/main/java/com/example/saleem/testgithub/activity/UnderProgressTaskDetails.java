@@ -3,6 +3,7 @@ package com.example.saleem.testgithub.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +25,7 @@ import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.example.saleem.testgithub.utils.MyExceptionHandler;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -50,6 +52,7 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
     TextView UserTxt, TaskTitle, TaskDesc, taskDeadLine;
     Button delete;
     SeekBar progressbar;
+    TextView progressText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +71,32 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
 
 
         int color = 0xFF00ACC1;
-        progressbar.setMax(99); // It means 100%
 
+        progressbar.incrementProgressBy(10);
+        progressbar.setMax(100);
+        progressbar.setProgress(0);
         progressbar.getIndeterminateDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
-        progressbar.getProgressDrawable().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        progressbar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+
+        progressbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progress = progress / 10;
+                progress = progress * 10;
+                progressText.setText("Progress " + String.valueOf(progress) + "%");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
 
@@ -118,6 +143,7 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
         priorityPhoto = (ImageView) findViewById(R.id.priority_photo);
 
         progressbar = (SeekBar) findViewById(R.id.ProgressBar);
+        progressText = (TextView) findViewById(R.id.progressText);
     }
 
     @Override
@@ -135,7 +161,17 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
 
             Picasso.with(UnderProgressTaskDetails.this).load(UserPhoto).placeholder(R.drawable.default_profile).error(R.drawable.default_profile).fit().transform(new CircleTransform()).into(UserImage);
 
-            Picasso.with(UnderProgressTaskDetails.this).load(items.getAttachedImgUrl()).fit().into(Attach);
+            Picasso.with(UnderProgressTaskDetails.this).load(items.getAttachedImgUrl()).fit().into(Attach, new Callback() {
+                @Override
+                public void onSuccess() {
+                    Attach.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onError() {
+                    Attach.setVisibility(View.GONE);
+                }
+            });
             UserTxt.setText(UserName);
             TaskTitle.setText(items.getTitle());
             TaskDesc.setText(items.getDescreption());

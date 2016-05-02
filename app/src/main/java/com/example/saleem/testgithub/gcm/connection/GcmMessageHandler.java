@@ -84,11 +84,8 @@ public class GcmMessageHandler extends IntentService {
         GcmBroadcastReceiver.completeWakefulIntent(intent);
 
 
-//        UIConstanst.SessionToken = UtilityHelper.getPref("SessionToken", GcmMessageHandler.this);
-//
-//        if (UIConstanst.SessionToken != null) {
         showNotification();
-//        }
+
 
     }
 

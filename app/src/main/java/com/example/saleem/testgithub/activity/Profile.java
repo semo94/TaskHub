@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ContextThemeWrapper;
@@ -16,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.balysv.materialmenu.MaterialMenuDrawable;
@@ -28,8 +26,9 @@ import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.database.ApiHelper;
 import com.example.saleem.testgithub.database.DataBaseAble;
+import com.example.saleem.testgithub.gcm.connection.GCMAsyncTask;
+import com.example.saleem.testgithub.gcm.connection.GCMResultsListener;
 import com.example.saleem.testgithub.gcm.connection.HttpConnect;
-import com.example.saleem.testgithub.gson.items.PendingItems;
 import com.example.saleem.testgithub.gson.items.ProfileItems;
 import com.example.saleem.testgithub.utils.CircleTransform;
 import com.example.saleem.testgithub.utils.DrawerInit;
@@ -40,7 +39,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mikepenz.materialdrawer.Drawer;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,10 +49,8 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HTTP;
 
-/**
- * Created by admin on 4/21/2016.
- */
-public class Profile extends AppCompatActivity implements DataBaseAble {
+
+public class Profile extends AppCompatActivity implements DataBaseAble, GCMResultsListener {
 
     private Drawer drawer;
     private Toolbar toolbar;
@@ -70,6 +66,7 @@ public class Profile extends AppCompatActivity implements DataBaseAble {
     private ApiHelper apiHelper;
     public static Profile profile;
     private Button Send;
+    private String GCMString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +76,9 @@ public class Profile extends AppCompatActivity implements DataBaseAble {
         getProfileData();
 
         profile = this;
+
+
+
     }
 
     private void getProfileData() {
@@ -204,24 +204,10 @@ public class Profile extends AppCompatActivity implements DataBaseAble {
                     return;
                 }
 
-                JSONObject jsonParams = new JSONObject();
-                try {
-                    jsonParams.put("UserName", UserNameTxt.getText().toString().trim());
-                    jsonParams.put("UserEmail", EmailTxt.getText().toString().trim());
-                    jsonParams.put("GCM", "sss");
-                } catch (JSONException e) {
+                GCMAsyncTask task = new GCMAsyncTask(Profile.this);
+                task.setOnResultsListener(Profile.this);
+                task.execute();
 
-                }
-                StringEntity entity = new StringEntity(jsonParams.toString(), "UTF-8");
-                entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-
-                HttpConnect.postData(Config.UserInfo, entity, Profile.this, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        super.onSuccess(statusCode, headers, response);
-                        Log.e("Upload response", response.toString() + "  !");
-                    }
-                });
             }
         });
     }
@@ -259,6 +245,31 @@ public class Profile extends AppCompatActivity implements DataBaseAble {
         if (drawer != null) {
             drawer.setSelection(1, false);
         }
+
+    }
+
+    @Override
+    public void onGCMResultsSucceeded(String result) {
+        GCMString = result;
+
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("UserName", UserNameTxt.getText().toString().trim());
+            jsonParams.put("UserEmail", EmailTxt.getText().toString().trim());
+            jsonParams.put("GCM", GCMString);
+        } catch (JSONException e) {
+
+        }
+        StringEntity entity = new StringEntity(jsonParams.toString(), "UTF-8");
+        entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+
+        HttpConnect.postData(Config.UserInfo, entity, Profile.this, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("GCM response", response.toString() + "  !");
+            }
+        });
 
     }
 

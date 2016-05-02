@@ -83,7 +83,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.saleem.testgithub.activity.MyNeedsDetails"
+        <activity
+            android:name="com.example.saleem.testgithub.activity.MyNeedsDetails"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -92,16 +93,28 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.saleem.testgithub.activity.PendingTaskDetails"
-        android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name="com.example.saleem.testgithub.activity.PendingTaskDetails"
+            android:theme="@style/AppTheme.NoActionBar">
 
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
-    </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
-        <activity android:name="com.example.saleem.testgithub.activity.UnderProgressTaskDetails"
+        <activity
+            android:name="com.example.saleem.testgithub.activity.BlockList"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.example.saleem.testgithub.activity.UnderProgressTaskDetails"
             android:theme="@style/AppTheme.NoActionBar">
 
             <intent-filter>
@@ -166,10 +179,10 @@
 
         <activity
             android:name="com.example.saleem.testgithub.activity.Profile"
-            android:windowSoftInputMode="stateVisible|adjustNothing"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
