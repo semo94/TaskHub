@@ -9,12 +9,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ContextThemeWrapper;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -24,47 +28,60 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.example.saleem.testgithub.Gallery.CameraActivity;
+import com.example.saleem.testgithub.Gallery.GalleryActivity;
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.app.Config;
+import com.example.saleem.testgithub.gcm.connection.HttpConnect;
 import com.example.saleem.testgithub.helper.CircularImageView;
+import com.example.saleem.testgithub.utils.CircleTransform;
 import com.example.saleem.testgithub.utils.PhotoManager;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class UserInfoActivity extends SetupUI {
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
+
+public class UserInfoActivity extends AppCompatActivity {
 
     private EditText inputName, inputEmail;
     private TextInputLayout inputLayoutName, inputLayoutEmail;
     private Button btnSignUp;
-    int REQUEST_CAMERA = 0, SELECT_FILE = 1, RESIZE_PICTURE_REQUEST_CODE = 2, VIEW_IMAGE_FULL_SCREEN = 3;
-    private String UPLOAD_URL = "http://www.taskhub.tk/semo94/TaskHub/upload.php";
-    private CircularImageView circularImageView;
-    private String KEY_IMAGE = "image";
-    private String KEY_NAME = "name";
-    private Bitmap bitmap;
-    private boolean isPhotoSelected;
+    private ImageView circularImageView;
+    public static UserInfoActivity userInfoActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_user_info);
-        setupUI(findViewById(R.id.user_info_activity));
         inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_name);
         inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_email);
         inputName = (EditText) findViewById(R.id.input_name);
         inputEmail = (EditText) findViewById(R.id.input_email);
         btnSignUp = (Button) findViewById(R.id.btn_signup);
         btnSignUp.setTextColor(getResources().getColor(R.color.white));
-        circularImageView = (CircularImageView) findViewById(R.id.imageView);
+        circularImageView = (ImageView) findViewById(R.id.imageView);
 
 
         circularImageView.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                selectImage();
+
+                showCameraGalleryDialog();
             }
         });
 
@@ -72,12 +89,10 @@ public class UserInfoActivity extends SetupUI {
             @Override
             public void onClick(View view) {
                 submitForm();
-                uploadImage();
-
-
+                uploadPhoto(photo);
             }
         });
-
+        userInfoActivity = this;
 
     }
 
@@ -85,6 +100,19 @@ public class UserInfoActivity extends SetupUI {
      * Validating form
      */
     private void submitForm() {
+
+        if (inputName.getText().toString().trim().length() < 1) {
+            YoYo.with(Techniques.Shake)
+                    .playOn(inputName);
+            return;
+        }
+        if (inputEmail.getText().toString().trim().length() < 1) {
+            YoYo.with(Techniques.Shake)
+                    .playOn(inputEmail);
+            return;
+        }
+
+
         if (!validateName()) {
             return;
         }
@@ -92,6 +120,27 @@ public class UserInfoActivity extends SetupUI {
         if (!validateEmail()) {
             return;
         }
+
+
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("UserName", inputName.getText().toString().trim());
+            jsonParams.put("UserEmail", inputEmail.getText().toString().trim());
+            jsonParams.put("GCM", "sss");
+        } catch (JSONException e) {
+
+        }
+        StringEntity entity = new StringEntity(jsonParams.toString(), "UTF-8");
+        entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+
+        HttpConnect.postData(Config.UserInfo, entity, UserInfoActivity.this, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("Upload response", response.toString() + "  !");
+            }
+        });
+
 
         Toast.makeText(getApplicationContext(), "Welcome to TaskHub!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(UserInfoActivity.this, MainActivity.class);
@@ -136,153 +185,83 @@ public class UserInfoActivity extends SetupUI {
         }
     }
 
-    public void selectImage() {
-        if (isPhotoSelected) {
-            Intent intent = new Intent(this, FullScreenImageViewerActivity.class);
-            intent.putExtra(FullScreenImageViewerActivity.PATH_ARG, Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
-            intent.putExtra(FullScreenImageViewerActivity.TITLE_ARG, "Your Photo");
-            startActivityForResult(intent, VIEW_IMAGE_FULL_SCREEN);
-
-        } else {
-            final CharSequence[] items = {"Camera", "Library", "Cancel"};
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoActivity.this);
-            builder.setTitle("Choose one from this options:");
-            builder.setItems(items, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("Camera")) {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(intent, REQUEST_CAMERA);
-                    } else if (items[item].equals("Library")) {
-                        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "Select App"), SELECT_FILE);
-                    } else if (items[item].equals("Cancel")) {
-                        dialog.dismiss();
-                    }
-                }
-            });
-            builder.show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CAMERA) {
-                assert data != null;
-                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                boolean isOK = PhotoManager.CreateImageFile(this, PhotoManager.USER_PHOTO_FILE_NAME, thumbnail);
-                if (isOK) {
-                    openCropActivity(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
-                } else {
-                    Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
-                }
-
-            }
-
-            if (requestCode == SELECT_FILE) {
-                openCropActivity(data.getData());
-            }
-
-            if (requestCode == RESIZE_PICTURE_REQUEST_CODE) {
-                circularImageView.setImageURI(null);
-                circularImageView.setImageURI(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
-                isPhotoSelected = true;
-            }
-
-            if (requestCode == VIEW_IMAGE_FULL_SCREEN) {
-                boolean isDeleted = data.getBooleanExtra(FullScreenImageViewerActivity.IS_DELETED_ARG, false);
-                boolean isChanged = data.getBooleanExtra(FullScreenImageViewerActivity.IS_CHANGED_ARG, false);
-
-                if (isDeleted) {
-                    isPhotoSelected = false;
-                    circularImageView.setImageResource(R.drawable.default_profile);
-                    deleteFile(PhotoManager.USER_PHOTO_FILE_NAME);
-                }
-
-                if (isChanged && requestCode == RESIZE_PICTURE_REQUEST_CODE) {
-                    circularImageView.setImageURI(null);
-                    circularImageView.setImageURI(Uri.fromFile(getFileStreamPath(PhotoManager.USER_PHOTO_FILE_NAME)));
-                    isPhotoSelected = true;
-
-                }
-            }
-        }
-    }
-
-    public String getStringImage(Bitmap bmp) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
-    }
-
-    private void uploadImage() {
-        //Showing the progress dialog
-        final ProgressDialog loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, UPLOAD_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        //Disimissing the progress dialog
-                        loading.dismiss();
-                        //Showing toast message of the response
-                        Toast.makeText(UserInfoActivity.this, s, Toast.LENGTH_LONG).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        //Dismissing the progress dialog
-                        loading.dismiss();
-
-                        //Showing toast
-                        Toast.makeText(UserInfoActivity.this, volleyError.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                //Converting Bitmap to String
-                String image = getStringImage(bitmap);
-
-                //Getting Image Name
-                String name = inputName.getText().toString().trim();
-
-                //Creating parameters
-                Map<String, String> params = new Hashtable<String, String>();
-
-                //Adding parameters
-                params.put(KEY_IMAGE, image);
-                params.put(KEY_NAME, name);
-
-                //returning parameters
-                return params;
-            }
-        };
-
-        //Creating a Request Queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        //Adding request to the queue
-        requestQueue.add(stringRequest);
-    }
-
-    private void openCropActivity(Uri photoPath) {
-        Intent intent = new Intent(this, ResizeImageActivity.class);
-        intent.putExtra(ResizeImageActivity.INPUT_PHOTO_URI_ARG, photoPath);
-        intent.putExtra(ResizeImageActivity.INPUT_PHOTO_NAME, PhotoManager.USER_PHOTO_FILE_NAME);
-        startActivityForResult(intent, RESIZE_PICTURE_REQUEST_CODE);
-
-    }
-
 
     @Override
     protected void onPause() {
         super.onPause();
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
+
+
+    Intent myIntent;
+    private android.support.v7.app.AlertDialog levelDialog;
+
+    private void showCameraGalleryDialog() {
+
+        CharSequence[] items_ = {
+                "Camera",
+                "Gallery"};
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(this,
+                android.R.style.Theme_Holo_Light_Dialog);
+        // Creating and Building the Dialog
+        android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(wrapper);
+
+        builder1.setItems(items_, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+
+                        switch (item) {
+
+                            case 0:
+                                myIntent = new Intent(UserInfoActivity.this, CameraActivity.class);
+                                myIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                myIntent.putExtra("typeOfUpload", "UserInfo");
+                                startActivity(myIntent);
+
+                                break;
+
+                            case 1:
+                                myIntent = new Intent(UserInfoActivity.this, GalleryActivity.class);
+                                myIntent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                                myIntent.putExtra("typeOfUpload", "UserInfo");
+                                startActivity(myIntent);
+                                break;
+
+                        }
+
+                        levelDialog.dismiss();
+                    }
+                }
+
+        );
+        levelDialog = builder1.create();
+        levelDialog.show();
+        levelDialog.setCanceledOnTouchOutside(true);
+
+    }
+
+    public void uploadPhoto(String photoToUploadURL) {
+
+        Log.e("uploadPhoto", "uploadPhoto");
+        //  photoToUploadURL = photoToUploadURL + ".jpg";
+        HttpConnect.postUploadPhoto("http://www.taskhub.tk/semo94/TaskHub/API/uploadphoto.php", photoToUploadURL, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+
+                Log.e("UploadResponse", response.toString() + " !");
+
+            }
+        });
+    }
+
+
+    String photo;
+
+    public void setPhoto(String photoToUploadURL) {
+        photo = photoToUploadURL;
+
+        Picasso.with(UserInfoActivity.this).load("file:" + photo).placeholder(R.drawable.default_profile).error(R.drawable.default_profile).fit().transform(new CircleTransform()).into(circularImageView);
+
     }
 }

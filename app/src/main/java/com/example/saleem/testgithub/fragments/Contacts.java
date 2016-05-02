@@ -12,11 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.activity.AssignTaskActivity;
+import com.example.saleem.testgithub.activity.UserInfoActivity;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.database.ApiHelper;
 import com.example.saleem.testgithub.database.DataBaseAble;
@@ -71,6 +73,7 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
         }.getType();
 
         lstContacts = (ListView) view.findViewById(R.id.contacts_list);
+        lstContacts.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(this);
 
@@ -80,11 +83,14 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), AssignTaskActivity.class);
-                startActivity(intent);
+                Log.e("Floating", "Assign");
+                Intent intent = new Intent(activity, AssignTaskActivity.class);
+                activity.startActivity(intent);
+
             }
         });
     }
+
 
     @Override
     public void SetApp_db(String Key, int tag) {

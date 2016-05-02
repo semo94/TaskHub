@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataB extends SQLiteOpenHelper {
 
-    protected static String dBname = "farfachatdb.db";
-    private static int v = 21;
+    protected static String dBname = "taskhubdb.db";
+    private static int v = 1;
 
     protected static DataB obj;
     public static SQLiteDatabase sqlDB = null;

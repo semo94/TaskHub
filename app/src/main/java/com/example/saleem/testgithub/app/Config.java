@@ -6,12 +6,14 @@ public class Config {
     public static final String URL_REQUEST_SMS = "http://www.taskhub.tk/semo94/TaskHub/APIs/request_sms.php";
     public static final String URL_VERIFY_OTP = "http://www.taskhub.tk/semo94/TaskHub/APIs/verify_otp.php";
     public static final String Get_UserInfo = "http://www.taskhub.tk/semo94/TaskHub/API/Get_UserInfo.php";
+    public static final String UserInfo = "http://www.taskhub.tk/semo94/TaskHub/API/UserInfo.php";
     public static final String GetMyContactsList = "http://www.taskhub.tk/semo94/TaskHub/API/GetMyContactsList.php";
     public static final String UploadContacts = "http://www.taskhub.tk/semo94/TaskHub/API/UploadContacts.php";
     public static final String Get_PendingList = "http://www.taskhub.tk/semo94/TaskHub/API/PendingToDoList.php";
     public static final String Get_UnderProgressList = "http://www.taskhub.tk/semo94/TaskHub/API/UnderProgressToDoList.php";
     public static final String Get_MyNeedsList = "http://www.taskhub.tk/semo94/TaskHub/API/myNeedsList.php";
     public static final String Get_DeactivateAccount = "http://www.taskhub.tk/semo94/TaskHub/API/DeactivateAccount.php";
+    public static final String Get_TaskDetails = "http://www.taskhub.tk/semo94/TaskHub/API/taskDetails.php?Taskid=";
 
     // SMS provider identification
     // It should match with your SMS gateway origin

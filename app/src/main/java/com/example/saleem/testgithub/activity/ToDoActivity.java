@@ -1,5 +1,6 @@
 package com.example.saleem.testgithub.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
@@ -25,6 +27,7 @@ import com.example.saleem.testgithub.utils.MyExceptionHandler;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -37,7 +40,6 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     private Toolbar toolbar;
     private MaterialMenuDrawable materialMenu;
     private ListView listView;
-    private GetResolver getResolver = new GetResolver();
     private Type listType;
     private PendingItems items;
     private PendingAdapter adapter;
@@ -54,14 +56,64 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
         listType = new TypeToken<PendingItems>() {
         }.getType();
         this.apiHelper = new ApiHelper(ToDoActivity.this);
-        GlobalConstants.db.GetCache(Config.Get_UnderProgressList, 0, this, apiHelper.App, apiHelper.Cache);
-        HttpConnect.getData(Config.Get_UnderProgressList, getResolver);
+      //  GlobalConstants.db.GetCache(Config.Get_UnderProgressList, 0, this, apiHelper.App, apiHelper.Cache);
+        HttpConnect.getData(Config.Get_PendingList, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("ToDO", response.toString() + " ToDO response");
+                swipeContainer.setRefreshing(false);
+                items = (PendingItems) GlobalConstants.gson.fromJson(response.toString(), listType);
+                setAdapterList();
+              //  GlobalConstants.db.SetCache(Config.Get_UnderProgressList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+                Log.e("ToDO", responseString.toString() + " ToDO response");
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e("onFailure String", responseString.toString() + " ToDO response");
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+
+                Log.e("onFailure JSONObject", errorResponse.toString() + " ToDO response");
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+
+                Log.e("JSONArray ", errorResponse.toString() + " ToDO response");
+            }
+        });
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent myIntent = new Intent(ToDoActivity.this, UnderProgressTaskDetails.class);
+                myIntent.putExtra("TaskId", items.getPendingToDoList().get(position).getId());
+                myIntent.putExtra("UserName", items.getPendingToDoList().get(position).getUserName());
+                myIntent.putExtra("UserPhoto", items.getPendingToDoList().get(position).getImageUrl());
+                startActivity(myIntent);
+            }
+        });
     }
 
 
     private void initUI() {
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this, AboutUs.class, "AboutUs"));
+        Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this, ToDoActivity.class, "ToDoActivity"));
         setContentView(R.layout.to_do_activity);
         initControls();
 
@@ -91,7 +143,7 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     private void initControls() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         listView = (ListView) findViewById(R.id.to_do_list);
-        listView.setVisibility(View.INVISIBLE);
+        listView.setVisibility(View.VISIBLE);
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         swipeContainer.setOnRefreshListener(this);
     }
@@ -99,19 +151,6 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
-
-    class GetResolver extends JsonHttpResponseHandler {
-        @Override
-        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            super.onSuccess(statusCode, headers, response);
-            Log.e("ToDO", response.toString() + " ToDO response");
-            swipeContainer.setRefreshing(false);
-            items = (PendingItems) GlobalConstants.gson.fromJson(response.toString(), listType);
-            setAdapterList();
-            GlobalConstants.db.SetCache(Config.Get_UnderProgressList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
-        }
-
     }
 
     private void setAdapterList() {
@@ -153,7 +192,7 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
 
     @Override
     public void onRefresh() {
-        HttpConnect.getData(Config.Get_UnderProgressList, getResolver);
+        //HttpConnect.getData(Config.Get_UnderProgressList, getResolver);
     }
 
 

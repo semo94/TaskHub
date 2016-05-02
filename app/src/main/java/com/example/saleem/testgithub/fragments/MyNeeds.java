@@ -1,7 +1,9 @@
 package com.example.saleem.testgithub.fragments;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,11 +11,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.activity.MyNeedsDetails;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.database.ApiHelper;
 import com.example.saleem.testgithub.database.DataBaseAble;
@@ -24,6 +28,7 @@ import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
@@ -57,6 +62,18 @@ public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayou
         GlobalConstants.db.GetCache(Config.Get_MyNeedsList, 0, this, apiHelper.App, apiHelper.Cache);
 
         HttpConnect.getData(Config.Get_MyNeedsList, getResolver);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent myIntent=new Intent(activity, MyNeedsDetails.class);
+                myIntent.putExtra("TaskId", items.getMyNeddsList().get(position).getId());
+                myIntent.putExtra("UserName", items.getMyNeddsList().get(position).getUserName());
+                myIntent.putExtra("UserPhoto", items.getMyNeddsList().get(position).getImageUrl());
+                activity.startActivity(myIntent);
+            }
+        });
     }
 
 
@@ -75,6 +92,7 @@ public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayou
     public void onRefresh() {
         HttpConnect.getData(Config.Get_MyNeedsList, getResolver);
     }
+
 
     class GetResolver extends JsonHttpResponseHandler {
         @Override

@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.saleem.testgithub.R;
@@ -18,38 +20,55 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 public class ResizeImageActivity extends AppCompatActivity {
 
-    public static final String INPUT_PHOTO_URI_ARG  = "input_photo_uri_arg";
-    public static final String INPUT_PHOTO_NAME     = "input_photo_name_arg";
+    public static final String INPUT_PHOTO_URI_ARG = "input_photo_uri_arg";
+    public static final String INPUT_PHOTO_NAME = "input_photo_name_arg";
 
     private CropImageView cropImageView;
-    Uri     inputPhotoUri ;
-    String  photoName;
+    Uri inputPhotoUri;
+    String photoName;
     private ProgressDialog dialog;
 
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         setContentView(R.layout.activity_resize_image);
 
         cropImageView = (CropImageView) findViewById(R.id.CropImageView);
         cropImageView.setFixedAspectRatio(true);
         cropImageView.setAspectRatio(640, 640);
 
-        ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(true);
+//        ActionBar actionBar = getSupportActionBar();
+//        assert actionBar != null;
+//        actionBar.setDisplayHomeAsUpEnabled(true);
 
 
+        button = (Button) findViewById(R.id.button);
 
-        if (getIntent() != null){
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProgressDialog();
+                if (saveImage()) {
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
+                    dialog.dismiss();
+                    finish();
+                } else {
+                    Toast.makeText(ResizeImageActivity.this, "Error", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        if (getIntent() != null) {
             inputPhotoUri = getIntent().getParcelableExtra(INPUT_PHOTO_URI_ARG);
-            photoName     = getIntent().getStringExtra(INPUT_PHOTO_NAME);
-            if (inputPhotoUri == null){
+            photoName = getIntent().getStringExtra(INPUT_PHOTO_NAME);
+            if (inputPhotoUri == null) {
                 setResult(RESULT_CANCELED);
                 finish();
-            }else{
+            } else {
                 cropImageView.setImageUriAsync(inputPhotoUri);
             }
         }
@@ -72,7 +91,7 @@ public class ResizeImageActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 setResult(RESULT_CANCELED);
                 finish();
@@ -80,13 +99,13 @@ public class ResizeImageActivity extends AppCompatActivity {
 
             case R.id.done_menu_done_item:
                 showProgressDialog();
-                if (saveImage()){
+                if (saveImage()) {
                     Intent intent = new Intent();
-                    setResult(RESULT_OK,intent);
+                    setResult(RESULT_OK, intent);
                     dialog.dismiss();
                     finish();
-                }else{
-                    Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Error", Toast.LENGTH_LONG).show();
                 }
 
                 break;
@@ -96,13 +115,9 @@ public class ResizeImageActivity extends AppCompatActivity {
     }
 
     private boolean saveImage() {
-        return PhotoManager.CreateImageFile(this,photoName,cropImageView.getCroppedImage());
+        return PhotoManager.CreateImageFile(this, photoName, cropImageView.getCroppedImage());
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-    }
+
 }
 

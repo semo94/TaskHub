@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 0x11;
 
     String[] permissions = {"android.permission.READ_CONTACTS"};
-     // without sdk version check
+    // without sdk version check
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -57,12 +57,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                 UserContacts.getContactList(MainActivity.this);
+                UserContacts.getContactList(MainActivity.this);
             } else {
                 Toast.makeText(getApplicationContext(), "PERMISSION_DENIED", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,14 +98,15 @@ public class MainActivity extends AppCompatActivity {
         } else {
             HashMap<String, String> userDetails = pref.getUserDetails();
             GlobalConstants.UserID = userDetails.get("id");
-           /// Mobile = userDetails.get("mobile");
+            /// Mobile = userDetails.get("mobile");
         }
-//        Log.e("UserId",  GlobalConstants.UserID + " !");
 
+        GlobalConstants.UserID = "337";
+        Log.e("UserId", GlobalConstants.UserID + " !");
 
-        if (Build.VERSION.SDK_INT>Build.VERSION_CODES.LOLLIPOP_MR1){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             requestPermissions(permissions, REQUEST_CODE);
-        }else{
+        } else {
             UserContacts.getContactList(MainActivity.this);
         }
 
@@ -140,55 +142,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-
-    // Inflate the menu; this adds items to the action bar if it is present.
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchItem = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
-
-        // Get the notifications MenuItem and
-        // its LayerDrawable (layer-list)
-        MenuItem item = menu.findItem(R.id.notifications);
-        LayerDrawable icon = (LayerDrawable) item.getIcon();
-
-        // Update LayerDrawable's BadgeDrawable
-        Utils.setBadgeCount(this, icon, mNotificationsCount);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        if (item.getItemId() == R.id.notifications) {
-            // TODO: display unread notifications.
-            return true;
-        }
-
-        if (id == R.id.action_deActivate) {
-            logout();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//
+//    // Inflate the menu; this adds items to the action bar if it is present.
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//
+//
+//        // Associate searchable configuration with the SearchView
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        MenuItem searchItem = menu.findItem(R.id.menu_search);
+//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        searchView.setIconifiedByDefault(false);
+//
+//        // Get the notifications MenuItem and
+//        // its LayerDrawable (layer-list)
+//        MenuItem item = menu.findItem(R.id.notifications);
+//        LayerDrawable icon = (LayerDrawable) item.getIcon();
+//
+//        // Update LayerDrawable's BadgeDrawable
+//        Utils.setBadgeCount(this, icon, mNotificationsCount);
+//
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        if (item.getItemId() == R.id.notifications) {
+//            // TODO: display unread notifications.
+//            return true;
+//        }
+//
+//        if (id == R.id.action_deActivate) {
+//            logout();
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     /*
 Updates the count of notifications in the ActionBar.

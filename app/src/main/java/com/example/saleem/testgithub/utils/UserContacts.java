@@ -71,7 +71,7 @@ public class UserContacts {
                 if (phone != 0) {
                     try {
                         JSONObject jo = new JSONObject();
-                        jo.put("PhoneNumber", phone);
+                        jo.put("PhoneNumber", "+"+phone);
                         phonesArray.put(jo);
                     } catch (JSONException e) {
 

@@ -131,7 +131,9 @@ public class DataBaseAdapter {
             } else {
 
                 // cache_ cache = new cache_(context);
-                return cache.SelectFromCache(Key);
+
+                String response=cache.SelectFromCache(Key);
+                return response;
 
             }
 

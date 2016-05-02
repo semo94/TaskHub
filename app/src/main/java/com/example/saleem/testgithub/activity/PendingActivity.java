@@ -1,5 +1,6 @@
 package com.example.saleem.testgithub.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
@@ -56,6 +58,18 @@ public class PendingActivity extends AppCompatActivity implements DataBaseAble, 
         this.apiHelper = new ApiHelper(PendingActivity.this);
         GlobalConstants.db.GetCache(Config.Get_PendingList, 0, this, apiHelper.App, apiHelper.Cache);
         HttpConnect.getData(Config.Get_PendingList, getResolver);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent myIntent = new Intent(PendingActivity.this, PendingTaskDetails.class);
+                myIntent.putExtra("TaskId", items.getPendingToDoList().get(position).getId());
+                myIntent.putExtra("UserName", items.getPendingToDoList().get(position).getUserName());
+                myIntent.putExtra("UserPhoto", items.getPendingToDoList().get(position).getImageUrl());
+                startActivity(myIntent);
+            }
+        });
     }
 
 
@@ -71,7 +85,7 @@ public class PendingActivity extends AppCompatActivity implements DataBaseAble, 
         materialMenu = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
         materialMenu.animateIconState(MaterialMenuDrawable.IconState.BURGER);
         toolbar.setNavigationIcon(materialMenu);
-        this.getSupportActionBar().setTitle("To Do Tasks");
+        this.getSupportActionBar().setTitle("Pending");
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorAccent));
         }

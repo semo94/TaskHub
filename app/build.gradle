@@ -57,4 +57,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'com.balysv:material-ripple:1.0.2'
+    compile 'com.github.ganfra:material-spinner:1.1.1'
+
 }

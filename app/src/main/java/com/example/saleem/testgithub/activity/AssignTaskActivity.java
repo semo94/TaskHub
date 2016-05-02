@@ -31,7 +31,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.app.Config;
+import com.example.saleem.testgithub.gcm.connection.HttpConnect;
 import com.example.saleem.testgithub.utils.PhotoManager;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -40,46 +46,39 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import cz.msebera.android.httpclient.protocol.HTTP;
+
 public class AssignTaskActivity extends AppCompatActivity {
 
-    private EditText dLine, taskTitle,desc, attachment;
+    private EditText dLine, taskTitle, desc, attachment;
     private TextInputLayout inputLayoutTitle, inputLayoutDeadLine;
-    private ImageView vRec;
     private Button assign;
     private Spinner priority;
     private int spnItem;
-    private final int REQ_CODE_SPEECH_INPUT = 100;
-    int REQUEST_CAMERA = 0,SELECT_FILE = 1, RESIZE_PICTURE_REQUEST_CODE = 2, VIEW_IMAGE_FULL_SCREEN = 3;
-
-    private boolean isPhotoSelected = false;
-    private Uri attachment_uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        setContentView(R.layout.activity_assign_task);
+        setContentView(R.layout.content_assign_task);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        vRec                = (ImageView) findViewById(R.id.voice_rec_icon);
-        assign              = (Button) findViewById(R.id.btn_assignTask);
-        desc                = (EditText) findViewById(R.id.input_des);
+        assign = (Button) findViewById(R.id.btn_assignTask);
+        desc = (EditText) findViewById(R.id.input_des);
         inputLayoutDeadLine = (TextInputLayout) findViewById(R.id.input_layout_cal);
-        inputLayoutTitle    = (TextInputLayout) findViewById(R.id.input_layout_task);
-        dLine               = (EditText)findViewById(R.id.deadLine);
-        taskTitle           = (EditText) findViewById(R.id.input_task);
-        priority            = (Spinner) findViewById(R.id.priority_level);
-        attachment          = (EditText) findViewById(R.id.input_attach);
+        inputLayoutTitle = (TextInputLayout) findViewById(R.id.input_layout_task);
+        dLine = (EditText) findViewById(R.id.deadLine);
+        taskTitle = (EditText) findViewById(R.id.input_task);
+        priority = (Spinner) findViewById(R.id.priority_level);
+        attachment = (EditText) findViewById(R.id.input_attach);
 
         taskTitle.addTextChangedListener(new MyTextWatcher(taskTitle));
         dLine.addTextChangedListener(new MyTextWatcher(dLine));
-
-
-
-
-
 
 
         assign.setOnClickListener(new View.OnClickListener() {
@@ -90,19 +89,10 @@ public class AssignTaskActivity extends AppCompatActivity {
         });
 
 
-        vRec.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                promptSpeechInput();
-            }
-        });
-
-
         attachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectImage();
+
             }
         });
         //date setup
@@ -111,8 +101,6 @@ public class AssignTaskActivity extends AppCompatActivity {
         //spinner setup
         spinner();
     }
-
-
 
 
     /**
@@ -127,9 +115,28 @@ public class AssignTaskActivity extends AppCompatActivity {
             return;
         }
 
-         if (!validatePriority()) {
-             return;
-         }
+        if (!validatePriority()) {
+            return;
+        }
+
+//        JSONObject jsonParams = new JSONObject();
+//        try {
+//            jsonParams.put("UserName", UserNameTxt.getText().toString().trim());
+//            jsonParams.put("UserEmail", EmailTxt.getText().toString().trim());
+//            jsonParams.put("GCM", "sss");
+//        } catch (JSONException e) {
+//
+//        }
+//        StringEntity entity = new StringEntity(jsonParams.toString(), "UTF-8");
+//        entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+//
+//        HttpConnect.postData(Config.UserInfo, entity, Profile.this, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                super.onSuccess(statusCode, headers, response);
+//                Log.e("Upload response", response.toString() + "  !");
+//            }
+//        });
 
         Toast.makeText(getApplicationContext(), "Your task has been assigned", Toast.LENGTH_SHORT).show();
     }
@@ -151,7 +158,7 @@ public class AssignTaskActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "You must select priority for your task", Toast.LENGTH_SHORT).show();
             return false;
         } else
-        return true;
+            return true;
     }
 
 
@@ -199,8 +206,9 @@ public class AssignTaskActivity extends AppCompatActivity {
             }
         }
     }
-    public void spinner(){
-        String[] items = new String []{
+
+    public void spinner() {
+        String[] items = new String[]{
                 "Select your task priority",
                 "Critical",
                 "High",
@@ -208,33 +216,30 @@ public class AssignTaskActivity extends AppCompatActivity {
                 "Low"
         };
 
-        final List<String > priorityList = new ArrayList<>(Arrays.asList(items));
+        final List<String> priorityList = new ArrayList<>(Arrays.asList(items));
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
-                this,R.layout.spinner_text,priorityList){
+                this, R.layout.spinner_text, priorityList) {
             @Override
-            public boolean isEnabled(int position){
-                if(position == 0)
-                {
+            public boolean isEnabled(int position) {
+                if (position == 0) {
                     // Disable the first item from Spinner
                     // First item will be use for hint
                     return false;
-                }
-                else
-                {
+                } else {
                     return true;
                 }
             }
+
             @Override
             public View getDropDownView(int position, View convertView,
                                         ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if(position == 0){
+                if (position == 0) {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                }
-                else {
-                    switch(position){
+                } else {
+                    switch (position) {
                         case 1:
                             tv.setTextColor(getResources().getColor(R.color.critical));
                             break;
@@ -287,7 +292,7 @@ public class AssignTaskActivity extends AppCompatActivity {
 
     };
 
-    public void showDateDialog(){
+    public void showDateDialog() {
 
 
         dLine.setOnClickListener(
@@ -303,6 +308,7 @@ public class AssignTaskActivity extends AppCompatActivity {
                 }
         );
     }
+
     private void updateLabel() {
 
         String myFormat = "dd/MM/yy"; //In which you need put here
@@ -312,120 +318,6 @@ public class AssignTaskActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * Showing google speech input dialog
-     * */
-    private void promptSpeechInput() {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
-                getString(R.string.speech_prompt));
-        try {
-            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
-        } catch (ActivityNotFoundException a) {
-            Toast.makeText(getApplicationContext(),
-                    getString(R.string.speech_not_supported),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * Receiving speech input
-     * */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-            if  (requestCode == REQ_CODE_SPEECH_INPUT) {
-                if (resultCode == RESULT_OK && null != data) {
-
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    desc.setText(result.get(0));
-                }
-            }
-
-            if (requestCode == REQUEST_CAMERA) {
-                assert data != null;
-                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-                boolean isOK = PhotoManager.CreateImageFile(this,PhotoManager.TASK_ATTACHMENT_FILE_NAME,thumbnail);
-                if (isOK){
-                    openCropActivity(Uri.fromFile(getFileStreamPath(PhotoManager.TASK_ATTACHMENT_FILE_NAME)));
-                }else {
-                    Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
-                }
-
-            }
-
-            if (requestCode == SELECT_FILE ){
-                openCropActivity(data.getData());
-            }
-
-            if (requestCode == RESIZE_PICTURE_REQUEST_CODE){
-                attachment.setHint(R.string.view_attach);
-                attachment_uri = Uri.fromFile(getFileStreamPath(PhotoManager.TASK_ATTACHMENT_FILE_NAME));
-                isPhotoSelected = true;
-            }
-
-            if (requestCode == VIEW_IMAGE_FULL_SCREEN){
-                boolean isDeleted = data.getBooleanExtra(FullScreenImageViewerActivity.IS_DELETED_ARG,false);
-                boolean isChanged = data.getBooleanExtra(FullScreenImageViewerActivity.IS_CHANGED_ARG,false);
-
-                if (isDeleted){
-                    isPhotoSelected = false;
-                    attachment.setHint(R.string.select_attach);
-                    deleteFile(PhotoManager.TASK_ATTACHMENT_FILE_NAME);
-                }
-
-                if (isChanged && requestCode==RESIZE_PICTURE_REQUEST_CODE){
-                    attachment.setHint(R.string.view_attach);
-                    attachment_uri = Uri.fromFile(getFileStreamPath(PhotoManager.TASK_ATTACHMENT_FILE_NAME));
-                    isPhotoSelected = true;
-
-                }
-            }
-    }
-
-
-    public void selectImage() {
-        if (isPhotoSelected){
-            Intent intent = new Intent(this,FullScreenImageViewerActivity.class);
-            intent.putExtra(FullScreenImageViewerActivity.PATH_ARG, Uri.fromFile(getFileStreamPath(PhotoManager.TASK_ATTACHMENT_FILE_NAME)));
-            intent.putExtra(FullScreenImageViewerActivity.TITLE_ARG,"Your Photo");
-            startActivityForResult(intent,VIEW_IMAGE_FULL_SCREEN);
-
-        }else{
-            final CharSequence[] items = { "Camera", "Library", "Cancel" };
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(AssignTaskActivity.this);
-            builder.setTitle("Choose one from this options:");
-            builder.setItems(items, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("Camera")) {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(intent, REQUEST_CAMERA);
-                    } else if (items[item].equals("Library")) {
-                        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        intent.setType("image/*");
-                        startActivityForResult(Intent.createChooser(intent, "Select App"), SELECT_FILE);
-                    } else if (items[item].equals("Cancel")) {
-                        dialog.dismiss();
-                    }
-                }
-            });
-            builder.show();
-        }
-    }
-
-    private void openCropActivity(Uri photoPath){
-        Intent intent = new Intent(this,ResizeImageActivity.class);
-        intent.putExtra(ResizeImageActivity.INPUT_PHOTO_URI_ARG, photoPath);
-        intent.putExtra(ResizeImageActivity.INPUT_PHOTO_NAME, PhotoManager.TASK_ATTACHMENT_FILE_NAME);
-        startActivityForResult(intent,RESIZE_PICTURE_REQUEST_CODE);
-
-    }
     @Override
     protected void onPause() {
         super.onPause();

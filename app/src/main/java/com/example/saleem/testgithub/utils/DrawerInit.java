@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.example.saleem.testgithub.R;
@@ -33,10 +34,9 @@ public class DrawerInit {
         drawer = new DrawerBuilder()
                 .withActivity(activity)
                 .withToolbar(toolbar)
-                .withActionBarDrawerToggleAnimated(true)
+                 .withActionBarDrawerToggleAnimated(true)
                 .addDrawerItems(
                         home.withSetSelected(true), profile, aboutUs, sittings
-
                 ).withOnDrawerItemClickListener(new com.mikepenz.materialdrawer.Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
