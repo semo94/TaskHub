@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:background="@drawable/stroke_circle"
-                android:text="Deactivate Acount"
+                android:text="Deactivate Account"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -63,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:background="@drawable/stroke_circle"
-                android:text="Other Sittengs"
+                android:text="Block List"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp"
                 android:textStyle="bold" />

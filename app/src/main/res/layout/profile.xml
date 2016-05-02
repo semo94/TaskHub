@@ -5,6 +5,18 @@
     android:layout_height="match_parent">
 
 
+    <Button
+        android:id="@+id/Send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:text="Update info"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -93,16 +105,7 @@
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/Send"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@color/colorPrimary"
-                android:text="Save"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
+
         </LinearLayout>
     </ScrollView>
 

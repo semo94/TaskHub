@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.example.saleem.testgithub.R;
@@ -76,6 +75,6 @@ public class DrawerInit {
     private PrimaryDrawerItem home = new PrimaryDrawerItem().withName("Home").withIdentifier(0).withSelectedColorRes(R.color.material_drawer_background).withIcon(R.drawable.home).withTextColor(Color.parseColor("#FFFFFF")).withIconTintingEnabled(true).withSelectedIconColorRes(R.color.material_drawer_selected_text).withIconColorRes(R.color.white);
     private PrimaryDrawerItem profile = new PrimaryDrawerItem().withName("Profile").withIdentifier(1).withSelectedColorRes(R.color.material_drawer_background).withIcon(R.drawable.profile).withTextColor(Color.parseColor("#FFFFFF")).withIconTintingEnabled(true).withSelectedIconColorRes(R.color.material_drawer_selected_text).withIconColorRes(R.color.white);
     private PrimaryDrawerItem aboutUs = new PrimaryDrawerItem().withName("About Us").withIdentifier(2).withSelectedColorRes(R.color.material_drawer_background).withIcon(R.drawable.about_us).withTextColor(Color.parseColor("#FFFFFF")).withIconTintingEnabled(true).withSelectedIconColorRes(R.color.material_drawer_selected_text).withIconColorRes(R.color.white);
-    private PrimaryDrawerItem sittings = new PrimaryDrawerItem().withName("Sittings").withIdentifier(3).withSelectedColorRes(R.color.material_drawer_background).withIcon(R.drawable.settings).withTextColor(Color.parseColor("#FFFFFF")).withIconTintingEnabled(true).withSelectedIconColorRes(R.color.material_drawer_selected_text).withIconColorRes(R.color.white);
+    private PrimaryDrawerItem sittings = new PrimaryDrawerItem().withName("Settings").withIdentifier(3).withSelectedColorRes(R.color.material_drawer_background).withIcon(R.drawable.settings).withTextColor(Color.parseColor("#FFFFFF")).withIconTintingEnabled(true).withSelectedIconColorRes(R.color.material_drawer_selected_text).withIconColorRes(R.color.white);
 
 }
