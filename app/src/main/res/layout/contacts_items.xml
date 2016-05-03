@@ -22,8 +22,7 @@
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_gravity="left|center_horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp" />
+                    android:layout_margin="8dp" />
 
 
                 <TextView
@@ -31,10 +30,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
-                    android:textAllCaps="true"
+                    android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@+id/icon"
-                    android:textSize="17sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
 
