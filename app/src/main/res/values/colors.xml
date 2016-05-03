@@ -22,11 +22,6 @@
     <color name="status_green_color">#4CAF50</color>
 
 
-    <color name="NewList_row_start_color">#FFEBEE</color>
-    <color name="NewList_row_end_color">#FFEBEE</color>
-
-    <color name="NewList_row_hover_start_color">#FFCDD2</color>
-    <color name="NewList_row_hover_end_color">#FFCDD2</color>
 
     <color name="critical">#B71C1C</color>
     <color name="high">#E65100</color>

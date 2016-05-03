@@ -1,22 +1,13 @@
 package com.example.saleem.testgithub.activity;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.speech.RecognizerIntent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -25,19 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.saleem.testgithub.R;
-import com.example.saleem.testgithub.app.Config;
-import com.example.saleem.testgithub.gcm.connection.HttpConnect;
-import com.example.saleem.testgithub.utils.PhotoManager;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,11 +28,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.entity.StringEntity;
-import cz.msebera.android.httpclient.message.BasicHeader;
-import cz.msebera.android.httpclient.protocol.HTTP;
 
 public class AssignTaskActivity extends AppCompatActivity {
 
@@ -67,7 +45,7 @@ public class AssignTaskActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        //toolbar.setTitleColor(Color.WHITE);
         assign = (Button) findViewById(R.id.btn_assignTask);
         desc = (EditText) findViewById(R.id.input_des);
         inputLayoutDeadLine = (TextInputLayout) findViewById(R.id.input_layout_cal);
