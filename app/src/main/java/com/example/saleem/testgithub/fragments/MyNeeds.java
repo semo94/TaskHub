@@ -3,7 +3,6 @@ package com.example.saleem.testgithub.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,6 +16,7 @@ import android.widget.ListView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.activity.MainActivity;
 import com.example.saleem.testgithub.activity.MyNeedsDetails;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.database.ApiHelper;
@@ -28,20 +28,22 @@ import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
 
-public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayout.OnRefreshListener {
+public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayout.OnRefreshListener, MainActivity.SearchInterface {
 
     private ApiHelper apiHelper;
     private Type listType;
     private MyNeedsItems items;
+    private MyNeedsItems searchedItems;
     private GetResolver getResolver = new GetResolver();
     private ListView listView;
     private MyNeedsListAdapter adapter;
@@ -68,9 +70,9 @@ public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayou
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent myIntent=new Intent(activity, MyNeedsDetails.class);
-                myIntent.putExtra("TaskId", items.getMyNeddsList().get(position).getId());
-                myIntent.putExtra("UserName", items.getMyNeddsList().get(position).getUserName());
-                myIntent.putExtra("UserPhoto", items.getMyNeddsList().get(position).getImageUrl());
+                myIntent.putExtra("TaskId", searchedItems.getMyNeddsList().get(position).getId());
+                myIntent.putExtra("UserName", searchedItems.getMyNeddsList().get(position).getUserName());
+                myIntent.putExtra("UserPhoto", searchedItems.getMyNeddsList().get(position).getImageUrl());
                 activity.startActivity(myIntent);
             }
         });
@@ -93,33 +95,18 @@ public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayou
         HttpConnect.getData(Config.Get_MyNeedsList, getResolver);
     }
 
-
-    class GetResolver extends JsonHttpResponseHandler {
-        @Override
-        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            super.onSuccess(statusCode, headers, response);
-            Log.e("My needs", response.toString() + " My needs response");
-            swipeContainer.setRefreshing(false);
-            items = (MyNeedsItems) GlobalConstants.gson.fromJson(response.toString(), listType);
-            setAdapterList();
-            GlobalConstants.db.SetCache(Config.Get_MyNeedsList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
-        }
-
-    }
-
     private void setAdapterList() {
         if (adapter == null) {
             adapter = new MyNeedsListAdapter(activity,
-                    R.layout.my_needs_list, items.getMyNeddsList());
+                    R.layout.my_needs_list, searchedItems.getMyNeddsList());
             listView.setVisibility(View.VISIBLE);
             listView.setAdapter(adapter);
             YoYo.with(Techniques.SlideInUp).playOn(listView);
         } else {
             listView.setVisibility(View.VISIBLE);
-            adapter.restart(items.getMyNeddsList());
+            adapter.restart(searchedItems.getMyNeddsList());
         }
     }
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -160,8 +147,42 @@ public class MyNeeds extends Fragment implements DataBaseAble, SwipeRefreshLayou
     @Override
     public void GetCache_db(String Key, String Value, int tag) {
         if (Value != null) {
-            items = (MyNeedsItems) GlobalConstants.gson.fromJson(Value, listType);
+            items = GlobalConstants.gson.fromJson(Value, listType);
+            searchedItems = GlobalConstants.gson.fromJson(Value, listType);
             setAdapterList();
         }
     }
+
+    @Override
+    public void onTyping(String textTyped) {
+        Log.d("MyNeed Fragment", textTyped);
+        searchedItems.getMyNeddsList().clear();
+        List<MyNeedsItems.MyNeddsList> myNeeds = new ArrayList<MyNeedsItems.MyNeddsList>();
+        for (MyNeedsItems.MyNeddsList myNeeds1 : items.getMyNeddsList()) {
+            try {
+                if (myNeeds1.getUserName().toLowerCase().contains(textTyped.toLowerCase())) {
+                    myNeeds.add(myNeeds1);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        searchedItems.setMyNeddsList(myNeeds);
+        setAdapterList();
+    }
+
+    class GetResolver extends JsonHttpResponseHandler {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            super.onSuccess(statusCode, headers, response);
+            Log.e("My needs", response.toString() + " My needs response");
+            swipeContainer.setRefreshing(false);
+            items = GlobalConstants.gson.fromJson(response.toString(), listType);
+            searchedItems = GlobalConstants.gson.fromJson(response.toString(), listType);
+            setAdapterList();
+            GlobalConstants.db.SetCache(Config.Get_MyNeedsList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
+        }
+
+    }
+
 }

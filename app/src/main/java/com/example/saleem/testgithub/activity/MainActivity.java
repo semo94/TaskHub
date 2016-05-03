@@ -1,23 +1,27 @@
 package com.example.saleem.testgithub.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
-import com.example.saleem.testgithub.Notification.Utils;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.fragments.Contacts;
 import com.example.saleem.testgithub.fragments.MyNeeds;
@@ -40,17 +44,14 @@ import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 0x11;
+    String[] permissions = {"android.permission.READ_CONTACTS"};
+    int Count;
     private PrefManager pref;
-
     private MaterialMenuDrawable materialMenu;
     private Toolbar toolbar;
-    private Drawer drawer;
-
-    private static final int REQUEST_CODE = 0x11;
-
-    String[] permissions = {"android.permission.READ_CONTACTS"};
     // without sdk version check
-
+    private Drawer drawer;
     private ImageView notification;
     private BadgeView badgeViewNotification;
 
@@ -132,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new MyNeeds(), "My Needs");
@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new Contacts(), "Contacts");
         viewPager.setAdapter(adapter);
     }
-
 
     /**
      * Logging out user
@@ -157,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
 
         finish();
     }
-
 
     ////    @Override
 ////
@@ -219,7 +217,37 @@ public class MainActivity extends AppCompatActivity {
 //        invalidateOptionsMenu();
 //    }
 
-    int Count;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
+
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                onTyping(newText);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+
+
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
+
+
+        return true;
+    }
 
     @Override
     protected void onResume() {
@@ -263,5 +291,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+    }
+
+    void onTyping(String textTyped) {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        assert viewPager != null;
+        int index = viewPager.getCurrentItem();
+        ViewPagerAdapter adapter = ((ViewPagerAdapter) viewPager.getAdapter());
+        SearchInterface searchInterface = (SearchInterface) adapter.getItem(index);
+        searchInterface.onTyping(textTyped);
+    }
+
+    public interface SearchInterface {
+        void onTyping(String textTyped);
     }
 }

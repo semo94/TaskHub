@@ -12,13 +12,14 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.activity.MainActivity;
 import com.example.saleem.testgithub.activity.PendingActivity;
 import com.example.saleem.testgithub.activity.ToDoActivity;
 
 import java.lang.reflect.Field;
 
 
-public class ToDoFragment extends Fragment implements View.OnClickListener {
+public class ToDoFragment extends Fragment implements View.OnClickListener, MainActivity.SearchInterface {
 
 
     private RelativeLayout pendingRelative, toDoRelative;
@@ -83,4 +84,10 @@ public class ToDoFragment extends Fragment implements View.OnClickListener {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void onTyping(String textTyped) {
+        Log.d("ToDo Fragment", textTyped);
+    }
+
 }

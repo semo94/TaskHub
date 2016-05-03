@@ -1,13 +1,17 @@
 package com.example.saleem.testgithub.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,19 +24,17 @@ import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.database.ApiHelper;
 import com.example.saleem.testgithub.database.DataBaseAble;
 import com.example.saleem.testgithub.gcm.connection.HttpConnect;
-import com.example.saleem.testgithub.gson.items.PendingItems;
 import com.example.saleem.testgithub.gson.items.UnderProgressItems;
-import com.example.saleem.testgithub.listAdapters.PendingAdapter;
 import com.example.saleem.testgithub.listAdapters.UnderProgressAdapter;
 import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.example.saleem.testgithub.utils.MyExceptionHandler;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -44,6 +46,7 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     private ListView listView;
     private Type listType;
     private UnderProgressItems items;
+    private UnderProgressItems searchItems;
     private UnderProgressAdapter adapter;
     private ApiHelper apiHelper;
     private SwipeRefreshLayout swipeContainer;
@@ -65,7 +68,8 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
                 super.onSuccess(statusCode, headers, response);
                 Log.e("ToDO", response.toString() + " ToDO response");
                 swipeContainer.setRefreshing(false);
-                items = (UnderProgressItems) GlobalConstants.gson.fromJson(response.toString(), listType);
+                items = GlobalConstants.gson.fromJson(response.toString(), listType);
+                searchItems = GlobalConstants.gson.fromJson(response.toString(), listType);
                 setAdapterList();
                 GlobalConstants.db.SetCache(Config.Get_UnderProgressList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
             }
@@ -83,9 +87,9 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent myIntent = new Intent(ToDoActivity.this, UnderProgressTaskDetails.class);
-                myIntent.putExtra("TaskId", items.getProgressToDo().get(position).getId());
-                myIntent.putExtra("UserName", items.getProgressToDo().get(position).getUserName());
-                myIntent.putExtra("UserPhoto", items.getProgressToDo().get(position).getImageUrl());
+                myIntent.putExtra("TaskId", searchItems.getProgressToDo().get(position).getId());
+                myIntent.putExtra("UserName", searchItems.getProgressToDo().get(position).getUserName());
+                myIntent.putExtra("UserPhoto", searchItems.getProgressToDo().get(position).getImageUrl());
                 startActivity(myIntent);
             }
         });
@@ -137,13 +141,13 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     private void setAdapterList() {
         if (adapter == null) {
             adapter = new UnderProgressAdapter(ToDoActivity.this,
-                    R.layout.to_dos_list, items.getProgressToDo());
+                    R.layout.to_dos_list, searchItems.getProgressToDo());
             listView.setVisibility(View.VISIBLE);
             listView.setAdapter(adapter);
             YoYo.with(Techniques.SlideInUp).playOn(listView);
         } else {
             listView.setVisibility(View.VISIBLE);
-            adapter.restart(items.getProgressToDo());
+            adapter.restart(searchItems.getProgressToDo());
         }
     }
 
@@ -166,7 +170,8 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
     @Override
     public void GetCache_db(String Key, String Value, int tag) {
         if (Value != null) {
-            items = (UnderProgressItems) GlobalConstants.gson.fromJson(Value, listType);
+            items = GlobalConstants.gson.fromJson(Value, listType);
+            searchItems = GlobalConstants.gson.fromJson(Value, listType);
             setAdapterList();
         }
     }
@@ -182,4 +187,40 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
         super.onPause();
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.country_picker_menu, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.country_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchItems.getProgressToDo().clear();
+                ArrayList<UnderProgressItems.ProgressToDo> pendingToDoLists = new ArrayList<>();
+                for (UnderProgressItems.ProgressToDo pendingToDoList : items.getProgressToDo()) {
+                    try {
+                        if (pendingToDoList.getUserName().toLowerCase().contains(newText.toLowerCase())) {
+                            pendingToDoLists.add(pendingToDoList);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                searchItems.setProgressToDo(pendingToDoLists);
+                setAdapterList();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
+        return super.onCreateOptionsMenu(menu);
+
+    }
+
 }

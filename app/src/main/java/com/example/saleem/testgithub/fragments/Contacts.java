@@ -13,15 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.saleem.testgithub.R;
 import com.example.saleem.testgithub.activity.AssignTaskActivity;
-import com.example.saleem.testgithub.activity.BlockList;
-import com.example.saleem.testgithub.activity.UserInfoActivity;
+import com.example.saleem.testgithub.activity.MainActivity;
 import com.example.saleem.testgithub.app.Config;
 import com.example.saleem.testgithub.database.ApiHelper;
 import com.example.saleem.testgithub.database.DataBaseAble;
@@ -38,6 +35,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.StringEntity;
@@ -45,19 +43,19 @@ import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HTTP;
 
 
-public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayout.OnRefreshListener {
+public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayout.OnRefreshListener, MainActivity.SearchInterface {
 
+    int intPosition;
     private ApiHelper apiHelper;
     private ListView lstContacts;
     private Type listType;
     private ContactsItems items;
+    private ContactsItems searchedItems;
     private ContactsAdapter adapter;
     private GetResolver getResolver = new GetResolver();
     private Activity activity;
     private FloatingActionButton fab;
     private SwipeRefreshLayout swipeContainer;
-
-    int intPosition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,7 +90,7 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
 
                                                                        JSONObject jsonParams = new JSONObject();
                                                                        try {
-                                                                           jsonParams.put("UserID", items.getMyContactsList().get(intPosition).getId() + "");
+                                                                           jsonParams.put("UserID", searchedItems.getMyContactsList().get(intPosition).getId() + "");
 
                                                                        } catch (JSONException e) {
 
@@ -162,7 +160,8 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
     @Override
     public void GetCache_db(String Key, String Value, int tag) {
         if (Value != null) {
-            items = (ContactsItems) GlobalConstants.gson.fromJson(Value, listType);
+            items = GlobalConstants.gson.fromJson(Value, listType);
+            searchedItems = GlobalConstants.gson.fromJson(Value, listType);
             setAdapterList();
         }
     }
@@ -170,25 +169,11 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
     private void setAdapterList() {
         if (adapter == null) {
             adapter = new ContactsAdapter(activity,
-                    R.layout.contacts_items, items.getMyContactsList());
+                    R.layout.contacts_items, searchedItems.getMyContactsList());
             lstContacts.setAdapter(adapter);
         } else {
-            adapter.restart(items.getMyContactsList());
+            adapter.restart(searchedItems.getMyContactsList());
         }
-    }
-
-
-    class GetResolver extends JsonHttpResponseHandler {
-        @Override
-        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            super.onSuccess(statusCode, headers, response);
-            Log.e("Contacts", response.toString() + " Contacts response");
-            swipeContainer.setRefreshing(false);
-            items = (ContactsItems) GlobalConstants.gson.fromJson(response.toString(), listType);
-            setAdapterList();
-            GlobalConstants.db.SetCache(Config.GetMyContactsList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
-        }
-
     }
 
     @Override
@@ -217,5 +202,37 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
         HttpConnect.getData(Config.GetMyContactsList, getResolver);
     }
 
+    @Override
+    public void onTyping(String textTyped) {
+        Log.d("Contacts Fragment", textTyped);
+        searchedItems.getMyContactsList().clear();
+        List<ContactsItems.MyContactsList> myContactsLists = new ArrayList<>();
+        for (ContactsItems.MyContactsList myContactsList : items.getMyContactsList()) {
+            try {
+                if (myContactsList.getName().toLowerCase().contains(textTyped.toLowerCase())) {
+                    myContactsLists.add(myContactsList);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        searchedItems.setMyContactsList(myContactsLists);
+        setAdapterList();
+    }
+
+    class GetResolver extends JsonHttpResponseHandler {
+        @Override
+        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            super.onSuccess(statusCode, headers, response);
+            Log.e("Contacts", response.toString() + " Contacts response");
+            swipeContainer.setRefreshing(false);
+            items = GlobalConstants.gson.fromJson(response.toString(), listType);
+            searchedItems = GlobalConstants.gson.fromJson(response.toString(), listType);
+
+            setAdapterList();
+            GlobalConstants.db.SetCache(Config.GetMyContactsList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
+        }
+
+    }
 
 }
