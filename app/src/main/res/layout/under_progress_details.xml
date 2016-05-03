@@ -34,7 +34,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_margin="10dp" />
+                    android:layout_margin="8dp" />
 
                 <TextView
                     android:id="@+id/UserName"
@@ -63,7 +63,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="8dp" />
 
             </RelativeLayout>
 
@@ -75,15 +75,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_margin="8dp"
                     android:text="Task Description" />
 
                 <TextView
                     android:id="@+id/taskDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:text=""
                     android:textColor="@color/black" />
             </LinearLayout>
@@ -97,15 +97,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_margin="8dp"
                     android:text="Dead Line" />
 
                 <TextView
                     android:id="@+id/taskDeadLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:text=""
                     android:textColor="@color/black" />
             </LinearLayout>
@@ -119,14 +119,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_margin="8dp"
                     android:text="Attachment  Photo" />
 
                 <ImageView
                     android:id="@+id/attachment_image"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_margin="10dp" />
+                    android:layout_margin="8dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -138,15 +138,43 @@
                     android:id="@+id/progressText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Progress" />
+                    android:layout_margin="8dp"
+                    android:text="Progress: Not Yet" />
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/not_yet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/progressBar"
+                    android:layout_toStartOf="@+id/progressBar"
+                    android:text="Not Yet"/>
 
                 <SeekBar
                     android:id="@+id/ProgressBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp" />
+                    android:layout_marginRight="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="16dp"/>
+
+                <TextView
+                    android:layout_marginRight="8dp"
+                    android:id="@+id/done"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@+id/progressBar"
+                    android:layout_toEndOf="@+id/progressBar"
+                    android:text="Done"/>
+
+            </RelativeLayout>
 
 
             </LinearLayout>
@@ -156,34 +184,43 @@
                 android:id="@+id/DeleteButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="8dp"
                 android:background="@color/colorPrimary"
                 android:text="Set a Reminder"
                 android:textColor="#FFFFFF" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/call"
-                    android:layout_width="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_weight="1"
                     android:layout_alignParentLeft="true"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/call" />
+                    android:src="@drawable/ic_call_black_24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/email"
-                    android:layout_width="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:layout_weight="1"
                     android:layout_alignParentRight="true"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/email" />
+                    android:src="@drawable/ic_email_black_24dp"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    />
 
-            </RelativeLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
@@ -192,10 +229,11 @@
         android:id="@+id/UpdateProgress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:background="@color/colorPrimary"
         android:text="Update progress"
         android:textAllCaps="false"
         android:layout_alignParentBottom="true"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        />
 </RelativeLayout>

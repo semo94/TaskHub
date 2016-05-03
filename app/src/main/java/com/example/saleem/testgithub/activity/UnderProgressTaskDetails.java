@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -48,11 +49,12 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
     String TaskId, UserName, UserPhoto;
 
 
-    ImageView UserImage, Attach, Call, Email, priorityPhoto;
+    ImageView UserImage, Attach, priorityPhoto;
     TextView UserTxt, TaskTitle, TaskDesc, taskDeadLine;
     Button delete;
     SeekBar progressbar;
     TextView progressText;
+    ImageButton call, email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,18 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progress = progress / 10;
                 progress = progress * 10;
-                progressText.setText("Progress " + String.valueOf(progress) + "%");
+               // progressText.setText("Progress: " + "Not Yet");
+                if(progress == 0)
+                {
+                    progressText.setText("Progress: " + "Not Yet");
+                }
+                 else if(progress==100 )
+                {
+                    progressText.setText("Progress: " + "Done");
+                }
+                else
+                    progressText.setText("Progress: " + String.valueOf(progress) + "%");
+
             }
 
             @Override
@@ -133,15 +146,14 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         UserImage = (ImageView) findViewById(R.id.userImage);
         Attach = (ImageView) findViewById(R.id.attachment_image);
-        Call = (ImageView) findViewById(R.id.call);
-        Email = (ImageView) findViewById(R.id.email);
         UserTxt = (TextView) findViewById(R.id.UserName);
         TaskTitle = (TextView) findViewById(R.id.TaskTitle);
         TaskDesc = (TextView) findViewById(R.id.taskDescription);
         delete = (Button) findViewById(R.id.DeleteButton);
         taskDeadLine = (TextView) findViewById(R.id.taskDeadLine);
         priorityPhoto = (ImageView) findViewById(R.id.priority_photo);
-
+        call = (ImageButton) findViewById(R.id.call);
+        email = (ImageButton) findViewById(R.id.email) ;
         progressbar = (SeekBar) findViewById(R.id.ProgressBar);
         progressText = (TextView) findViewById(R.id.progressText);
     }
