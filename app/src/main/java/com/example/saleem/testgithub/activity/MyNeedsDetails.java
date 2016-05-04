@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,10 +43,9 @@ public class MyNeedsDetails extends AppCompatActivity {
     String TaskId, UserName, UserPhoto;
 
 
-    ImageView UserImage, Attach,priorityPhoto;
+    ImageView UserImage, Attach,priorityPhoto, Call,Email;
     TextView UserTxt, TaskTitle, TaskDesc, taskDeadLine;
     Button delete;
-    ImageButton Call,Email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +104,8 @@ public class MyNeedsDetails extends AppCompatActivity {
         delete = (Button) findViewById(R.id.DeleteButton);
         taskDeadLine = (TextView) findViewById(R.id.taskDeadLine);
         priorityPhoto= (ImageView) findViewById(R.id.priority_photo);
-        Call = (ImageButton) findViewById(R.id.call);
-        Email = (ImageButton) findViewById(R.id.email);
+        Call = (ImageView) findViewById(R.id.call_receiver);
+        Email = (ImageView) findViewById(R.id.email_receiver);
     }
 
     @Override

@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -49,12 +48,12 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
     String TaskId, UserName, UserPhoto;
 
 
-    ImageView UserImage, Attach, priorityPhoto;
+    ImageView UserImage, Attach, priorityPhoto, call, email;
     TextView UserTxt, TaskTitle, TaskDesc, taskDeadLine;
-    Button delete;
+    Button feedback;
     SeekBar progressbar;
     TextView progressText;
-    ImageButton call, email;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,11 +148,11 @@ public class UnderProgressTaskDetails extends AppCompatActivity {
         UserTxt = (TextView) findViewById(R.id.UserName);
         TaskTitle = (TextView) findViewById(R.id.TaskTitle);
         TaskDesc = (TextView) findViewById(R.id.taskDescription);
-        delete = (Button) findViewById(R.id.DeleteButton);
+        feedback = (Button) findViewById(R.id.UpdateProgress);
         taskDeadLine = (TextView) findViewById(R.id.taskDeadLine);
         priorityPhoto = (ImageView) findViewById(R.id.priority_photo);
-        call = (ImageButton) findViewById(R.id.call);
-        email = (ImageButton) findViewById(R.id.email) ;
+        call = (ImageView) findViewById(R.id.call_sender);
+        email = (ImageView) findViewById(R.id.email_sender) ;
         progressbar = (SeekBar) findViewById(R.id.ProgressBar);
         progressText = (TextView) findViewById(R.id.progressText);
     }

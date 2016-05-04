@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -16,13 +17,13 @@
         android:id="@+id/DeleteButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
         android:background="@color/colorPrimary"
-        android:text="Delete task"
+        android:text="@string/delete_task"
         android:textAllCaps="false"
-        android:textSize="18sp"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,7 +33,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <RelativeLayout
@@ -46,7 +47,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_margin="10dp"
+                    android:layout_margin="8dp"
+                    tools:ignore="ContentDescription"
                      />
 
                 <TextView
@@ -54,127 +56,114 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/userImage"
+                    android:layout_marginTop="8dp"
                     android:layout_toEndOf="@+id/userImage"
                     android:layout_toRightOf="@+id/userImage"
-                    android:layout_marginTop="8dp"
-                    android:textSize="20sp"
-                    android:textColor="@color/black" />
+                    android:ellipsize="end"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/TaskTitle"
                     android:layout_width="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_toRightOf="@+id/userImage"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/UserName"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/userImage"
+                    android:ellipsize="end"
                     android:textSize="18sp" />
 
 
                 <ImageView
                     android:id="@+id/priority_photo"
                     android:layout_width="16dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginTop="10dp"
                     android:layout_alignParentRight="true"
+                    tools:ignore="ContentDescription"
                    />
+
+                <ImageView
+                    android:id="@+id/call_receiver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TaskTitle"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/userImage"
+                    android:contentDescription="@string/call"
+                    android:src="@drawable/ic_call_black_24dp" />
+
+                <ImageView
+                    android:id="@+id/email_receiver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/TaskTitle"
+                    android:layout_marginLeft="32dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/call_receiver"
+                    android:contentDescription="@string/email"
+                    android:src="@drawable/ic_email_black_24dp" />
 
             </RelativeLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Task Description" />
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text="@string/task_description"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/taskDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:textColor="@color/black"
-                    android:text="" />
-            </LinearLayout>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text=""
+                    android:textColor="@color/black" />
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Dead Line" />
+                    android:layout_margin="16dp"
+                    android:text="@string/dead_line" />
 
                 <TextView
                     android:id="@+id/taskDeadLine"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:textColor="@color/black"
-                    android:layout_marginRight="10dp"
-                    android:text="" />
-            </LinearLayout>
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:text=""
+                    android:textColor="@color/black" />
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+
+
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Attachment  Photo" />
+                    android:layout_margin="16dp"
+                    android:text="@string/attachment_photo" />
 
                 <ImageView
                     android:id="@+id/attachment_image"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_margin="10dp"
-                    />
-            </LinearLayout>
+                    android:layout_margin="8dp"
+                    tools:ignore="ContentDescription" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/call"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_alignParentLeft="true"
-                    android:src="@drawable/ic_call_black_24dp"
-                    android:background="@color/colorPrimary"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    />
-
-                <ImageButton
-                    android:id="@+id/email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_email_black_24dp"
-                    android:background="@color/colorPrimary"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    />
-
-            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
