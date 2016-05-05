@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private Drawer drawer;
     private ImageView notification;
     private BadgeView badgeViewNotification;
+    private SearchView searchView;
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -225,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchItem = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
 
@@ -238,12 +241,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
                 return true;
 
 
             }
         };
         searchView.setOnQueryTextListener(textChangeListener);
+
 
 
         return true;
@@ -265,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                         if (Count > 0) {
                             badgeViewNotification = new BadgeView(MainActivity.this, notification);
                             badgeViewNotification.setText(Count + "");
-                            badgeViewNotification.setBadgePosition(BadgeView.POSITION_TOP_LEFT);
+                            badgeViewNotification.setBadgePosition(BadgeView.POSITION_BOTTOM_LEFT);
                             badgeViewNotification.show(true);
                             badgeViewNotification.setVisibility(View.VISIBLE);
                         } else {

@@ -19,17 +19,14 @@
 
         <ListView
             android:id="@+id/to_do_list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:divider="@null"
-            android:dividerHeight="3dp"
-            android:fadingEdge="none"
-            android:fastScrollEnabled="false"
-            android:footerDividersEnabled="false"
-            android:headerDividersEnabled="false"
-            android:listSelector="@android:color/transparent"
+            android:fastScrollEnabled="true"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:divider="@color/list_divider"
+            android:dividerHeight="1dp"
+            android:listSelector="@drawable/list_row_selector"
             android:smoothScrollbar="true" />
     </android.support.v4.widget.SwipeRefreshLayout>
 

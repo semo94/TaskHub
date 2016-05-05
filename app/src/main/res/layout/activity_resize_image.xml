@@ -13,12 +13,5 @@
         android:layout_weight="1"
         custom:cropScaleType="fitCenter" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_gravity="center_horizontal"
-        android:text="Submit" />
-
 
 </LinearLayout>

@@ -34,9 +34,7 @@ import java.lang.reflect.Type;
 
 import cz.msebera.android.httpclient.Header;
 
-/**
- * Created by admin on 5/2/2016.
- */
+
 public class UnderProgressTaskDetails extends AppCompatActivity {
 
     private Toolbar toolbar;
