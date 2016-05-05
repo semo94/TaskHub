@@ -1,9 +1,18 @@
 package com.example.saleem.testgithub.activity;
 
 import android.app.DatePickerDialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -16,11 +25,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.utils.PhotoManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,11 +42,18 @@ import java.util.Locale;
 
 public class AssignTaskActivity extends AppCompatActivity {
 
-    private EditText dLine, taskTitle, desc, attachment;
+    private EditText dLine;
+    private EditText taskTitle;
+    private EditText desc;
+    private TextView attachment;
     private TextInputLayout inputLayoutTitle, inputLayoutDeadLine;
     private Button assign;
+    private ImageView vRec;
     private Spinner priority;
-    private int spnItem;
+    private final int REQ_CODE_SPEECH_INPUT = 100;
+    int REQUEST_CAMERA = 0,SELECT_FILE = 1, RESIZE_PICTURE_REQUEST_CODE = 2, VIEW_IMAGE_FULL_SCREEN = 3;
+    private boolean isPhotoSelected = false;
+    private Uri attachment_uri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +63,12 @@ public class AssignTaskActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        final Drawable upArrow = getResources().getDrawable(R.drawable.ic_arrow_back_white_24dp);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
         //toolbar.setTitleColor(Color.WHITE);
+        vRec = (ImageView) findViewById(R.id.voice_rec_icon);
         assign = (Button) findViewById(R.id.btn_assignTask);
         desc = (EditText) findViewById(R.id.input_des);
         inputLayoutDeadLine = (TextInputLayout) findViewById(R.id.input_layout_cal);
@@ -53,7 +76,7 @@ public class AssignTaskActivity extends AppCompatActivity {
         dLine = (EditText) findViewById(R.id.deadLine);
         taskTitle = (EditText) findViewById(R.id.input_task);
         priority = (Spinner) findViewById(R.id.priority_level);
-        attachment = (EditText) findViewById(R.id.input_attach);
+        attachment = (TextView) findViewById(R.id.input_attach);
 
         taskTitle.addTextChangedListener(new MyTextWatcher(taskTitle));
         dLine.addTextChangedListener(new MyTextWatcher(dLine));
@@ -66,11 +89,18 @@ public class AssignTaskActivity extends AppCompatActivity {
             }
         });
 
+        vRec.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                promptSpeechInput();
+            }
+        });
 
         attachment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                selectImage();
             }
         });
         //date setup
@@ -295,6 +325,116 @@ public class AssignTaskActivity extends AppCompatActivity {
         dLine.setText(sdf.format(myCalendar.getTime()));
     }
 
+    /**
+     * Showing google speech input dialog
+     * */
+    private void promptSpeechInput() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.speech_prompt));
+        try {
+            startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
+        } catch (ActivityNotFoundException a) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.speech_not_supported),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void selectImage() {
+        if (isPhotoSelected){
+            Intent intent = new Intent(this,FullScreenImageViewerActivity.class);
+            intent.putExtra(FullScreenImageViewerActivity.PATH_ARG, Uri.fromFile(getFileStreamPath(PhotoManager.TASK_ATTACHMENT_FILE_NAME)));
+            intent.putExtra(FullScreenImageViewerActivity.TITLE_ARG,"Your Photo");
+            startActivityForResult(intent,VIEW_IMAGE_FULL_SCREEN);
+
+        }else{
+            final CharSequence[] items = { "Camera", "Library", "Cancel" };
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(AssignTaskActivity.this);
+            builder.setTitle("Choose one from this options:");
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    if (items[item].equals("Camera")) {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(intent, REQUEST_CAMERA);
+                    } else if (items[item].equals("Library")) {
+                        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intent.setType("image/*");
+                        startActivityForResult(Intent.createChooser(intent, "Select App"), SELECT_FILE);
+                    } else if (items[item].equals("Cancel")) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+            builder.show();
+        }
+    }
+
+    private void openCropActivity(Uri photoPath){
+        Intent intent = new Intent(this,ResizeImageActivity.class);
+        intent.putExtra(ResizeImageActivity.INPUT_PHOTO_URI_ARG, photoPath);
+        intent.putExtra(ResizeImageActivity.INPUT_PHOTO_NAME, PhotoManager.TASK_ATTACHMENT_FILE_NAME);
+        startActivityForResult(intent,RESIZE_PICTURE_REQUEST_CODE);
+
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if  (requestCode == REQ_CODE_SPEECH_INPUT) {
+            if (resultCode == RESULT_OK && null != data) {
+
+                ArrayList<String> result = data
+                        .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                desc.setText(result.get(0));
+            }
+        }
+
+        if (requestCode == REQUEST_CAMERA) {
+            assert data != null;
+            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            boolean isOK = PhotoManager.CreateImageFile(this,PhotoManager.TASK_ATTACHMENT_FILE_NAME,thumbnail);
+            if (isOK){
+                openCropActivity(Uri.fromFile(getFileStreamPath(PhotoManager.TASK_ATTACHMENT_FILE_NAME)));
+            }else {
+                Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+        if (requestCode == SELECT_FILE ){
+            openCropActivity(data.getData());
+        }
+
+        if (requestCode == RESIZE_PICTURE_REQUEST_CODE){
+            attachment.setFocusable(true);
+            attachment.setHint(R.string.view_attach);
+            attachment_uri = Uri.fromFile(getFileStreamPath(PhotoManager.TASK_ATTACHMENT_FILE_NAME));
+            isPhotoSelected = true;
+        }
+
+        if (requestCode == VIEW_IMAGE_FULL_SCREEN){
+            boolean isDeleted = data.getBooleanExtra(FullScreenImageViewerActivity.IS_DELETED_ARG,false);
+            boolean isChanged = data.getBooleanExtra(FullScreenImageViewerActivity.IS_CHANGED_ARG,false);
+
+            if (isDeleted){
+                isPhotoSelected = false;
+                attachment.setHint(R.string.select_attach);
+                deleteFile(PhotoManager.TASK_ATTACHMENT_FILE_NAME);
+            }
+
+            if (isChanged && requestCode==RESIZE_PICTURE_REQUEST_CODE){
+                attachment.setHint(R.string.view_attach);
+                attachment_uri = Uri.fromFile(getFileStreamPath(PhotoManager.TASK_ATTACHMENT_FILE_NAME));
+                isPhotoSelected = true;
+
+            }
+        }
+    }
 
     @Override
     protected void onPause() {
