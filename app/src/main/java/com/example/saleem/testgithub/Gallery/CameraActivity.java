@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.activity.AssignTaskActivity;
 import com.example.saleem.testgithub.activity.Profile;
 import com.example.saleem.testgithub.activity.UserInfoActivity;
 import com.example.saleem.testgithub.utils.MyExceptionHandler;
@@ -41,7 +42,7 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
 
     private String typeOfUpload = "";
     private Image mainImage;
-    private  int camId = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private int camId = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     private ImageView sendPicture, cancelPicture;
 
@@ -52,7 +53,6 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         Thread.setDefaultUncaughtExceptionHandler(new MyExceptionHandler(this, CameraActivity.class, "CameraActivity"));
         setContentView(R.layout.fragment_camera);
-
 
 
         Intent intent = getIntent();
@@ -133,7 +133,7 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
 
                     } else if (typeOfUpload.equals("Task")) {
 
-
+                        AssignTaskActivity.assignTaskActivity.setPhoto(mainImage.mUri.toString());
                     } else if (typeOfUpload.equals("UserInfo")) {
                         UserInfoActivity.userInfoActivity.setPhoto(mainImage.mUri.toString());
                     }
@@ -200,14 +200,14 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
             Matrix matrix = new Matrix();
             if (camId == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 matrix.postRotate(90);
-            } else if(camId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            } else if (camId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                 matrix.postRotate(-90);
             }
             picture = Bitmap.createBitmap(picture, 0, 0, picture.getWidth(),
                     picture.getHeight(), matrix, true);
 
             String path = MediaStore.Images.Media.insertImage(
-                   getContentResolver(), picture, "", "");
+                    getContentResolver(), picture, "", "");
 
             Uri contentUri = Uri.parse(path);
             mainImage = getImageFromContentUri(contentUri);

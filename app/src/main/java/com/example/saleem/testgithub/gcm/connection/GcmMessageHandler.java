@@ -104,7 +104,6 @@ public class GcmMessageHandler extends IntentService {
 
         Intent launchIntent;
         try {
-
             launchIntent = new Intent(GcmMessageHandler.this, MainActivity.class);
 
             if (trg.equals("1") || trg.equals("3") || trg.equals("6")) { //MyCoins

@@ -16,7 +16,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/ToolBarStyle"
-            app:titleTextColor="@color/white"/>
+            app:titleTextColor="@color/white" />
 
 
         <ScrollView
@@ -190,8 +190,8 @@
                             android:id="@+id/input_attach"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:focusable="false"
                             android:hint="@string/select_attach"
-                            android:enabled="false"
                             android:maxLines="1" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -199,7 +199,15 @@
 
                 </LinearLayout>
 
-
+                <ImageView
+                    android:id="@+id/attachmentPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

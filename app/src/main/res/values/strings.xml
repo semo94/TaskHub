@@ -67,4 +67,18 @@
     <string name="progress_not_yet">Progress: Not Yet</string>
     <string name="update_progress">Update progress</string>
     <string name="NotYet">Not yet</string>
+
+
+    <string-array name="alarm_sounds">
+        <item>"alarm_1"</item>
+        <item>"alarm_2"</item>
+        <item>"alarm_3"</item>
+        <item>"alarm_4"</item>
+        <item>"alarm_5"</item>
+        <item>"alarm_6"</item>
+        <item>"alarm_7"</item>
+        <item>"alarm_8"</item>
+        <item>"alarm_9"</item>
+
+    </string-array>
 </resources>

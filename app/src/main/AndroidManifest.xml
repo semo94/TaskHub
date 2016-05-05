@@ -262,6 +262,23 @@
             android:name=".utils.HttpService"
             android:exported="false" />
 
+        <activity
+            android:name="com.example.saleem.testgithub.reminder.RBTime"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".reminder.Alarm_Receiver" />
+        <service android:name=".reminder.RingtonePlayingService"
+            android:enabled="true">
+        </service>
+
     </application>
 
 </manifest>

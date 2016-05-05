@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.saleem.testgithub.R;
+import com.example.saleem.testgithub.activity.AssignTaskActivity;
 import com.example.saleem.testgithub.activity.Profile;
 import com.example.saleem.testgithub.activity.UserInfoActivity;
 import com.example.saleem.testgithub.utils.CircleTransform;
@@ -120,7 +121,7 @@ public class GalleryActivity extends AppCompatActivity {
                                 .toString());
 
                     } else if (typeOfUpload.equals("Task")) {
-
+                        AssignTaskActivity.assignTaskActivity.setPhoto(mainImage.mUri.toString());
 
                     } else if (typeOfUpload.equals("UserInfo")) {
                         UserInfoActivity.userInfoActivity.setPhoto(mainImage.mUri.toString());

@@ -18,6 +18,8 @@ public class Config {
     public static final String Post_UnBlockUser = "http://www.taskhub.tk/semo94/TaskHub/API/UnBlockUser.php";
     public static final String Post_BlockUser = "http://www.taskhub.tk/semo94/TaskHub/API/BlockUser.php";
 
+    public static final String Post_feedback = "http://www.taskhub.tk/semo94/TaskHub/API/feedback.php";
+
 
     public static final String Get_Notifications = "http://www.taskhub.tk/semo94/TaskHub/API/Allnotf.php";
 

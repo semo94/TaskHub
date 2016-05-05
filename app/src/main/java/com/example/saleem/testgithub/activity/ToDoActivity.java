@@ -73,20 +73,16 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
                 setAdapterList();
                 GlobalConstants.db.SetCache(Config.Get_UnderProgressList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
             }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-
-                Log.e("onFailure", responseString);
-            }
         });
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Log.e("TaskId", searchItems.getProgressToDo().get(position).getId() + "  !");
                 Intent myIntent = new Intent(ToDoActivity.this, UnderProgressTaskDetails.class);
+
                 myIntent.putExtra("TaskId", searchItems.getProgressToDo().get(position).getId());
                 myIntent.putExtra("UserName", searchItems.getProgressToDo().get(position).getUserName());
                 myIntent.putExtra("UserPhoto", searchItems.getProgressToDo().get(position).getImageUrl());
@@ -178,7 +174,18 @@ public class ToDoActivity extends AppCompatActivity implements DataBaseAble, Swi
 
     @Override
     public void onRefresh() {
-        //HttpConnect.getData(Config.Get_UnderProgressList, getResolver);
+        HttpConnect.getData(Config.Get_UnderProgressList, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("ToDO", response.toString() + " ToDO response");
+                swipeContainer.setRefreshing(false);
+                items = GlobalConstants.gson.fromJson(response.toString(), listType);
+                searchItems = GlobalConstants.gson.fromJson(response.toString(), listType);
+                setAdapterList();
+                GlobalConstants.db.SetCache(Config.Get_UnderProgressList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);
+            }
+        });
     }
 
 

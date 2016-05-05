@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.AlarmClock;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.saleem.testgithub.R;
@@ -25,6 +27,7 @@ import com.example.saleem.testgithub.database.DataBaseAble;
 import com.example.saleem.testgithub.gcm.connection.HttpConnect;
 import com.example.saleem.testgithub.gson.items.ContactsItems;
 import com.example.saleem.testgithub.listAdapters.ContactsAdapter;
+import com.example.saleem.testgithub.reminder.RBTime;
 import com.example.saleem.testgithub.utils.GlobalConstants;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -56,6 +59,8 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
     private Activity activity;
     private FloatingActionButton fab;
     private SwipeRefreshLayout swipeContainer;
+
+    private ArrayList<String> idsToSend = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -114,6 +119,28 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
                                                    }
                                                }
         );
+
+        lstContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (!items.getMyContactsList().get(position).getisSelected()) {
+                    items.getMyContactsList().get(position).setisSelected(true);
+                    idsToSend.add(items.getMyContactsList().get(position).getId());
+                } else {
+                    items.getMyContactsList().get(position).setisSelected(false);
+                    idsToSend.remove(items.getMyContactsList().get(position).getId());
+                }
+
+
+                if (idsToSend.size() > 0) {
+                    Toast.makeText(activity, "Items Selected =" + idsToSend.size(), Toast.LENGTH_SHORT).show();
+                }
+
+                adapter.restart(items.getMyContactsList());
+            }
+        });
+
     }
 
     private void initUI(View view) {
@@ -133,10 +160,16 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("Floating", "Assign");
-                Intent intent = new Intent(activity, AssignTaskActivity.class);
-                activity.startActivity(intent);
+//                if (idsToSend.size() < 1) {
+//                    Toast.makeText(activity, "Select a contact to Assign a task", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Intent intent = new Intent(activity, AssignTaskActivity.class);
+//                    intent.putStringArrayListExtra("idsToSend", idsToSend);
+//                    activity.startActivity(intent);
+//                }
 
+                Intent myIntent = new Intent(activity, RBTime.class);
+                activity.startActivity(myIntent);
             }
         });
     }
@@ -228,6 +261,10 @@ public class Contacts extends Fragment implements DataBaseAble, SwipeRefreshLayo
             swipeContainer.setRefreshing(false);
             items = GlobalConstants.gson.fromJson(response.toString(), listType);
             searchedItems = GlobalConstants.gson.fromJson(response.toString(), listType);
+
+            for (int i = 0; i < items.getMyContactsList().size(); i++) {
+                items.getMyContactsList().get(i).setisSelected(false);
+            }
 
             setAdapterList();
             GlobalConstants.db.SetCache(Config.GetMyContactsList, response.toString(), 0, null, apiHelper.App, apiHelper.Cache);

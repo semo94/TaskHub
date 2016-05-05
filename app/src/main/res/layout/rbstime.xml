@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TimePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timePicker"
+        android:clickable="true"
+        android:timePickerMode="clock" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Alarm"
+        android:id="@+id/start_alarm"
+        android:layout_below="@+id/timePicker"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="80dp"
+        android:layout_marginStart="20dp"
+        android:clickable="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unset Alarm"
+        android:id="@+id/end_alarm"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:layout_above="@+id/update_text"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Did you Set ALARM ?"
+        android:id="@+id/update_text"
+        android:layout_below="@+id/start_alarm"
+        android:layout_centerHorizontal="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner_sound"
+        android:layout_below="@+id/update_text"
+        android:layout_alignLeft="@+id/start_alarm"
+        android:layout_alignStart="@+id/start_alarm" />
+</RelativeLayout>

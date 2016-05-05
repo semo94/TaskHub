@@ -19,6 +19,7 @@ public class ContactsItems {
     public void setMyContactsList(List<MyContactsList> MyContactsList) {
         this.MyContactsList = MyContactsList;
     }
+
     public Boolean getIsSucceeded() {
         return IsSucceeded;
     }
@@ -28,36 +29,45 @@ public class ContactsItems {
     }
 
 
+    public class MyContactsList {
 
-public class MyContactsList {
+        private String Id;
+        private String Name;
+        private String Image;
+        private boolean isSelected;
 
-    private String Id;
-    private String Name;
-    private String Image;
+        public boolean getisSelected() {
+            return isSelected;
+        }
 
-    public String getId() {
-        return Id;
+        public void setisSelected(boolean selected) {
+            isSelected = selected;
+        }
+
+
+        public String getId() {
+            return Id;
+        }
+
+        public void setId(String Id) {
+            this.Id = Id;
+        }
+
+        public String getName() {
+            return Name;
+        }
+
+        public void setName(String Name) {
+            this.Name = Name;
+        }
+
+        public String getImage() {
+            return Image;
+        }
+
+        public void setImage(String Image) {
+            this.Image = Image;
+        }
+
     }
-
-    public void setId(String Id) {
-        this.Id = Id;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String Name) {
-        this.Name = Name;
-    }
-
-    public String getImage() {
-        return Image;
-    }
-
-    public void setImage(String Image) {
-        this.Image = Image;
-    }
-
-}
 }
